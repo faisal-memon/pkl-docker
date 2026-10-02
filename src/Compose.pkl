@@ -1,0 +1,50 @@
+/// Generic Docker Compose value types shared by service modules.
+module pkldocker.Compose
+
+/// A complete Compose application.
+services: Mapping<String, Service>
+
+/// Optional top-level network definitions.
+networks: Mapping<String, Network>? = null
+
+/// A Docker Compose service definition.
+class Service {
+  /// Container image reference.
+  image: String(!isEmpty)
+
+  /// Optional command arguments.
+  command: Listing<String>? = null
+
+  /// Container restart policy.
+  restart: String? = null
+
+  /// Published host ports.
+  ports: Listing<String> = new {}
+
+  /// Host and named volume mounts.
+  volumes: Listing<String> = new {}
+
+  /// Networks attached to the service.
+  networks: Listing<String> = new {}
+
+  /// Environment variables.
+  environment: Mapping<String, String>? = null
+
+  /// Devices exposed to the service.
+  devices: Listing<String> = new {}
+
+  /// Service dependencies.
+  dependsOn: Mapping<String, Dependency>? = null
+}
+
+/// A Compose network definition.
+class Network {
+  /// Whether the network already exists outside this Compose project.
+  `external`: Boolean = false
+}
+
+/// A dependency on another Compose service.
+class Dependency {
+  /// Optional dependency health condition.
+  condition: String? = null
+}

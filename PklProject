@@ -1,0 +1,12 @@
+amends "pkl:Project"
+
+package {
+  name = "pkl-docker"
+  license = "MIT"
+  version = read?("env:PKL_PACKAGE_VERSION") ?? "0.1.0"
+  baseUri = "package://github.com/faisal-memon/pkl-docker/releases/download/v\(version)/pkl-docker"
+  packageZipUrl = "https://github.com/faisal-memon/pkl-docker/releases/download/v\(version)/pkl-docker@\(version).zip"
+  sourceCode = "https://github.com/faisal-memon/pkl-docker"
+  sourceCodeUrlScheme = "\(sourceCode)/blob/v\(version)%{path}#L%{line}"
+  exclude { "out/**"; "dist/**"; "Makefile" }
+}

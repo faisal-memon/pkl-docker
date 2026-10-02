@@ -1,0 +1,40 @@
+/// Render generic Docker Compose values as Compose YAML.
+module pkldocker.ComposeRender
+
+import "Compose.pkl"
+
+config: Compose = new Compose { services = new {} }
+
+output {
+  value = new Dynamic {
+    services {
+      for (name in config.services.keys) {
+        [name] = new Dynamic {
+          image = config.services[name].image
+          command = config.services[name].command
+          restart = config.services[name].restart
+          ports = config.services[name].ports
+          volumes = config.services[name].volumes
+          networks = config.services[name].networks
+          environment = config.services[name].environment
+          devices = config.services[name].devices
+          when (config.services[name].dependsOn != null) {
+            depends_on {
+              for (dependency in config.services[name].dependsOn.keys) {
+                [dependency] = new Dynamic { condition = config.services[name].dependsOn[dependency].condition }
+              }
+            }
+          }
+        }
+      }
+    }
+    when (config.networks != null) {
+      networks {
+        for (name in config.networks.keys) {
+          [name] = new Dynamic { ["external"] = config.networks[name].`external` }
+        }
+      }
+    }
+  }
+  renderer = new YamlRenderer {}
+}

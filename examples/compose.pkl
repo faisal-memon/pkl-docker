@@ -1,0 +1,12 @@
+amends "../src/ComposeRender.pkl"
+
+import "../src/Compose.pkl"
+
+config {
+  services = new Mapping {
+    ["example"] = new Compose.Service {
+      image = "nginx:1.27"
+      ports = new Listing { "8080:80" }
+    }
+  }
+}
