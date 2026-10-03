@@ -1,5 +1,5 @@
 /// Generic Docker Compose value types shared by service modules.
-module pkldocker.Compose
+open module pkldocker.Compose
 
 /// A complete Compose application.
 services: Mapping<String, Service>
