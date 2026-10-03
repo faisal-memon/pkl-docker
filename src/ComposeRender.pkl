@@ -18,6 +18,27 @@ output {
           networks = config.services[name].networks
           environment = config.services[name].environment
           devices = config.services[name].devices
+          when (config.services[name].deploy != null) {
+            deploy {
+              when (config.services[name].deploy.resources != null) {
+                resources {
+                  when (config.services[name].deploy.resources.reservations != null) {
+                    reservations {
+                      devices {
+                        for (device in config.services[name].deploy.resources.reservations.devices) {
+                          new Dynamic {
+                            driver = device.driver
+                            count = device.count
+                            capabilities = device.capabilities
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
           when (config.services[name].dependsOn != null) {
             depends_on {
               for (dependency in config.services[name].dependsOn.keys) {
