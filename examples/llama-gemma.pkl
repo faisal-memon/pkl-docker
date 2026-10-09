@@ -1,0 +1,29 @@
+/// Minimal llama.cpp chat server example.
+amends "../src/ComposeRender.pkl"
+
+import "../src/Compose.pkl"
+import "../src/LlamaCpp.pkl"
+
+local gemma = new LlamaCpp.Server {
+  name = "llamacpp-main"
+  model = "gemma-4-26b-a4b-it-ud-q4_k_m"
+  hostPort = 8002
+  imageTag = "server-cuda"
+  commandArgs = new Listing {
+    "--host"; "0.0.0.0"; "--port"; "8080"
+    "--model"; "/models/gemma-4-26b-a4b-it-ud-q4_k_m.gguf"
+  }
+  volumeMounts = new Listing { "./data/models:/models:ro" }
+  networkNames = new Listing { "ai_net"; "shared_net"; "mcp_net" }
+}
+
+config {
+  services = new Mapping {
+    [gemma.name] = gemma.composeService
+  }
+  networks = new Mapping {
+    ["ai_net"] = new Compose.Network { `external` = true }
+    ["shared_net"] = new Compose.Network { `external` = true }
+    ["mcp_net"] = new Compose.Network { `external` = true }
+  }
+}

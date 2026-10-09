@@ -1,0 +1,47 @@
+/// Small, explicit configuration model for one llama.cpp server.
+module pkldocker.LlamaCpp
+
+import "Compose.pkl"
+
+/// A single llama.cpp server exposed through Docker Compose.
+class Server {
+  /// Compose service name.
+  name: String(!isEmpty)
+
+  /// Container image repository.
+  image: String(!isEmpty) = "ghcr.io/ggml-org/llama.cpp"
+
+  /// llama.cpp image tag, such as `server` or `server-cuda`.
+  imageTag: String(!isEmpty) = "server"
+
+  /// Model file or model identifier passed to llama.cpp.
+  model: String(!isEmpty)
+
+  /// Host port for the OpenAI-compatible API.
+  hostPort: Int
+
+  /// Container port for the OpenAI-compatible API.
+  containerPort: Int = 8080
+
+  restartPolicy: String? = "unless-stopped"
+  commandArgs: Listing<String> = new {}
+  volumeMounts: Listing<String> = new {}
+  networkNames: Listing<String> = new {}
+  environmentVars: Mapping<String, String> = new {}
+  deviceMappings: Listing<String> = new {}
+
+  hidden serviceImage = "\(image):\(imageTag)"
+  hidden servicePort = "\(hostPort):\(containerPort)"
+
+  /// Convert this server to the generic Compose service model.
+  composeService: Compose.Service = new Compose.Service {
+    image = serviceImage
+    command = commandArgs
+    restart = restartPolicy
+    ports = new Listing { servicePort }
+    volumes = volumeMounts
+    networks = networkNames
+    environment = environmentVars
+    devices = deviceMappings
+  }
+}

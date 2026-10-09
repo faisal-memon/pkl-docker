@@ -31,8 +31,6 @@ jobs:
         with:
           github-token: ${{ github.token }}
           version-bump: ${{ github.event_name == 'workflow_dispatch' && inputs.version_bump || '' }}
-          write-tag: "false"
-          write-major-tag: "false"
       - name: Build versioned package
         env:
           RELEASE_TAG: ${{ steps.version.outputs.new-tag }}

@@ -9,6 +9,7 @@ render:
 
 validate: render
 	@$(PKL) eval examples/compose.pkl >/dev/null
+	@$(PKL) eval examples/llama-gemma.pkl >/dev/null
 	@echo "pkl-docker validation succeeded."
 
 package:
