@@ -5,7 +5,7 @@ import "Compose.pkl"
 
 /// A reusable YAML file generated from one typed Compose configuration.
 class File {
-  config: Compose = new Compose { services = new {} }
+  config: Any = new Dynamic { services = new {} }
 
   output {
     value = new Dynamic {
