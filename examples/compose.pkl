@@ -4,6 +4,11 @@ amends "../src/Compose.pkl"
 services {
   ["example"] = new Service {
     image = "nginx:1.27"
-    ports = new Listing { "8080:80" }
+    ports = new Listing {
+      new Port {
+        published = 8080
+        target = 80
+      }
+    }
   }
 }

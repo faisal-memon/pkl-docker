@@ -25,10 +25,10 @@ class Service {
   restart: String? = null
 
   /// Published host ports.
-  ports: Listing<String> = new {}
+  ports: Listing<Port> = new {}
 
   /// Host and named volume mounts.
-  volumes: Listing<String> = new {}
+  volumes: Listing<Volume> = new {}
 
   /// Networks attached to the service.
   networks: Listing<String> = new {}
@@ -44,6 +44,27 @@ class Service {
 
   /// Optional container deployment resources.
   deploy: Deploy? = null
+}
+
+/// A host-to-container port mapping.
+class Port {
+  /// Port exposed on the host.
+  published: Int(isBetween(1, 65535))
+
+  /// Port exposed by the container.
+  target: Int(isBetween(1, 65535))
+}
+
+/// A Docker Compose volume mount.
+class Volume {
+  /// Host path or named volume.
+  source: String(!isEmpty)
+
+  /// Path inside the container.
+  target: String(!isEmpty)
+
+  /// Whether the container can write to the mount.
+  `read_only`: Boolean = false
 }
 
 /// A Compose network definition.
