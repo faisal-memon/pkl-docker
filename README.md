@@ -8,15 +8,8 @@ Typed Docker Compose models for Pkl. Define services, ports, volumes, and networ
 amends "@docker/src/Compose.pkl"
 
 services {
-  ["nginx"] = new Service {
-    // renovate: datasource=docker depName=nginx
+  ["example"] = new Service {
     image = "nginx:1.27"
-    ports = new Listing {
-      new Port {
-        published = 18080
-        target = 80
-      }
-    }
   }
 }
 ```
@@ -33,12 +26,11 @@ The generated file is `out/compose.yaml` and looks like:
 
 ```yaml
 services:
-  nginx:
+  example:
     image: nginx:1.27
-    ports:
-      - published: 18080
-        target: 80
 ```
+
+The integration example in `examples/nginx.pkl` adds a published port on `18080` and is the file used by `make integration-test`.
 
 ## Service with deployment settings
 

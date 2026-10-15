@@ -1,15 +1,8 @@
-/// A simple Nginx Docker Compose document used by the examples and integration test.
+/// A minimal Docker Compose document rendered as YAML.
 amends "../src/Compose.pkl"
 
 services {
-  ["nginx"] = new Service {
-    // renovate: datasource=docker depName=nginx
+  ["example"] = new Service {
     image = "nginx:1.27"
-    ports = new Listing {
-      new Port {
-        published = 18080
-        target = 80
-      }
-    }
   }
 }
