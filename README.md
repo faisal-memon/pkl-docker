@@ -72,7 +72,7 @@ networks {
 }
 ```
 
-Ports and volumes use Compose’s structured syntax. Port values are validated, and a port can omit `published` when it should remain internal to the Compose network.
+Ports and volumes use Compose’s structured syntax. Volume mounts default to the `bind` type, port values are validated, and a port can omit `published` when it should remain internal to the Compose network.
 
 ## Validate locally
 
