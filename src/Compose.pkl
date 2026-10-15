@@ -8,16 +8,6 @@ services: Mapping<String, Service> = new {}
 networks: Mapping<String, Network>? = null
 
 /// The concrete document passed to the YAML renderer.
-local document: Document = new Document {
-  services = module.services
-  networks = module.networks
-}
-
-output {
-  value = document
-  renderer = new YamlRenderer {}
-}
-
 class Document {
   services: Mapping<String, Service>
   networks: Mapping<String, Network>? = null
@@ -96,4 +86,14 @@ class Device {
 
   /// Device capabilities, such as gpu.
   capabilities: Listing<String> = new {}
+}
+
+local document: Document = new Document {
+  services = module.services
+  networks = module.networks
+}
+
+output {
+  value = document
+  renderer = new YamlRenderer {}
 }
