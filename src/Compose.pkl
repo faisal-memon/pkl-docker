@@ -1,11 +1,15 @@
-/// Generic Docker Compose value types shared by service modules.
+/// A typed Docker Compose document and its YAML renderer.
 open module pkldocker.Compose
 
-/// A complete Compose application.
-services: Mapping<String, Service>
+// ── Compose file fields ──────────────────────────────────────────────────────
+
+/// Services in this Compose application, keyed by service name.
+services: Mapping<String, Service> = new {}
 
 /// Optional top-level network definitions.
 networks: Mapping<String, Network>? = null
+
+// ── Top-level Compose types ──────────────────────────────────────────────────
 
 /// A Docker Compose service definition.
 class Service {
@@ -19,10 +23,10 @@ class Service {
   restart: String? = null
 
   /// Published host ports.
-  ports: Listing<String> = new {}
+  ports: Listing<Port> = new {}
 
   /// Host and named volume mounts.
-  volumes: Listing<String> = new {}
+  volumes: Listing<Volume> = new {}
 
   /// Networks attached to the service.
   networks: Listing<String> = new {}
@@ -38,6 +42,29 @@ class Service {
 
   /// Optional container deployment resources.
   deploy: Deploy? = null
+}
+
+// ── Supporting types ─────────────────────────────────────────────────────────
+
+/// A host-to-container port mapping.
+class Port {
+  /// Port exposed on the host.
+  published: Int(isBetween(1, 65535))
+
+  /// Port exposed by the container.
+  target: Int(isBetween(1, 65535))
+}
+
+/// A Docker Compose volume mount.
+class Volume {
+  /// Host path or named volume.
+  source: String(!isEmpty)
+
+  /// Path inside the container.
+  target: String(!isEmpty)
+
+  /// Whether the container can write to the mount.
+  `read_only`: Boolean = false
 }
 
 /// A Compose network definition.
@@ -80,4 +107,13 @@ class Device {
 
   /// Device capabilities, such as gpu.
   capabilities: Listing<String> = new {}
+}
+
+// ── YAML output ──────────────────────────────────────────────────────────────
+output {
+  value = new Dynamic {
+    services = module.services
+    networks = module.networks
+  }
+  renderer = new YamlRenderer {}
 }
