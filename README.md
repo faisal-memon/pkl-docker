@@ -2,7 +2,7 @@
 
 Typed Docker Compose models for Pkl. Define services, ports, volumes, and networks as typed values, then render the Compose document directly as YAML.
 
-## Nginx example
+## NGINX example
 
 ```pkl
 amends "@docker/src/Compose.pkl"
@@ -82,7 +82,7 @@ Render the example with:
 make render-nginx
 ```
 
-Run the end-to-end Nginx check with Docker available:
+Run the end-to-end NGINX check with Docker available:
 
 ```sh
 make integration-test
