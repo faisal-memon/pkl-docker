@@ -1,0 +1,14 @@
+/// A minimal Nginx Compose deployment used by the integration test.
+amends "../src/Compose.pkl"
+
+services {
+  ["nginx"] = new Service {
+    image = "nginx:1.27"
+    ports = new Listing {
+      new Port {
+        published = 18080
+        target = 80
+      }
+    }
+  }
+}
