@@ -10,7 +10,7 @@ networks: Mapping<String, Network>? = null
 /// The complete Docker Compose file passed to the YAML renderer.
 class ComposeFile {
   services: Mapping<String, Service>
-  networks: Mapping<String, Network>? = null
+  networks: Mapping<String, Network>?
 }
 
 /// A Docker Compose service definition.
