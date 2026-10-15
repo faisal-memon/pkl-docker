@@ -110,19 +110,10 @@ class Device {
 }
 
 // ── YAML output ──────────────────────────────────────────────────────────────
-
-/// The complete Docker Compose file passed to the YAML renderer.
-class ComposeFile {
-  services: Mapping<String, Service>
-  networks: Mapping<String, Network>?
-}
-
-local composeFile: ComposeFile = new ComposeFile {
-  services = module.services
-  networks = module.networks
-}
-
 output {
-  value = composeFile
+  value = new Dynamic {
+    services = module.services
+    networks = module.networks
+  }
   renderer = new YamlRenderer {}
 }
