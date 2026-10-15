@@ -9,7 +9,14 @@ amends "@docker/src/Compose.pkl"
 
 services {
   ["nginx"] = new Service {
+    // renovate: datasource=docker depName=nginx
     image = "nginx:1.27"
+    ports = new Listing {
+      new Port {
+        published = 18080
+        target = 80
+      }
+    }
   }
 }
 ```
@@ -28,6 +35,9 @@ The generated file is `out/compose.yaml` and looks like:
 services:
   nginx:
     image: nginx:1.27
+    ports:
+      - published: 18080
+        target: 80
 ```
 
 ## Service with deployment settings

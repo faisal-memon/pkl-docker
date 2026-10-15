@@ -15,7 +15,7 @@ validate: render
 
 render-nginx:
 	@mkdir -p "$(OUT)"
-	@$(PKL) eval -o "$(NGINX_COMPOSE)" examples/nginx.pkl
+	@$(PKL) eval -o "$(NGINX_COMPOSE)" examples/compose.pkl
 
 integration-up: render-nginx
 	@docker compose -p "$(NGINX_PROJECT)" -f "$(NGINX_COMPOSE)" up -d
