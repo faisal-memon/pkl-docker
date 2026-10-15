@@ -16,6 +16,20 @@ services {
 
 The module emits a Compose document with the configured service under the top-level `services` section.
 
+Render that file with:
+
+```sh
+pkl eval -o out/compose.yaml examples/compose.pkl
+```
+
+The generated file is `out/compose.yaml` and looks like:
+
+```yaml
+services:
+  nginx:
+    image: nginx:1.27
+```
+
 ## Service with deployment settings
 
 ```pkl
