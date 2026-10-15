@@ -1,11 +1,15 @@
 /// A typed Docker Compose document and its YAML renderer.
 open module pkldocker.Compose
 
+// ── Compose file fields ──────────────────────────────────────────────────────
+
 /// Services in this Compose application, keyed by service name.
 services: Mapping<String, Service> = new {}
 
 /// Optional top-level network definitions.
 networks: Mapping<String, Network>? = null
+
+// ── Top-level Compose types ──────────────────────────────────────────────────
 
 /// The complete Docker Compose file passed to the YAML renderer.
 class ComposeFile {
@@ -46,6 +50,14 @@ class Service {
   deploy: Deploy? = null
 }
 
+/// A Compose network definition.
+class Network {
+  /// Whether the network already exists outside this Compose project.
+  `external`: Boolean = false
+}
+
+// ── Supporting types ─────────────────────────────────────────────────────────
+
 /// A host-to-container port mapping.
 class Port {
   /// Port exposed on the host.
@@ -65,12 +77,6 @@ class Volume {
 
   /// Whether the container can write to the mount.
   `read_only`: Boolean = false
-}
-
-/// A Compose network definition.
-class Network {
-  /// Whether the network already exists outside this Compose project.
-  `external`: Boolean = false
 }
 
 /// A dependency on another Compose service.
@@ -108,6 +114,8 @@ class Device {
   /// Device capabilities, such as gpu.
   capabilities: Listing<String> = new {}
 }
+
+// ── YAML output ──────────────────────────────────────────────────────────────
 
 local composeFile: ComposeFile = new ComposeFile {
   services = module.services
