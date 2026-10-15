@@ -4,18 +4,23 @@ VERSION ?= 0.1.0
 NGINX_COMPOSE ?= $(OUT)/nginx.yaml
 NGINX_PROJECT ?= pkl-docker-nginx
 
-.PHONY: render render-nginx validate package integration-up integration-test integration-down
-render:
-	@mkdir -p "$(OUT)"
-	@$(PKL) eval -o "$(OUT)/compose.yaml" examples/compose.pkl
+# -----------------------------------------------------------------------------
+# Validation
+# -----------------------------------------------------------------------------
+.PHONY: render-nginx validate
 
-validate: render
-	@$(PKL) eval examples/compose.pkl >/dev/null
+validate: render-nginx
+	@$(PKL) eval examples/nginx.pkl >/dev/null
 	@echo "pkl-docker validation succeeded."
 
 render-nginx:
 	@mkdir -p "$(OUT)"
 	@$(PKL) eval -o "$(NGINX_COMPOSE)" examples/nginx.pkl
+
+# -----------------------------------------------------------------------------
+# Integration testing
+# -----------------------------------------------------------------------------
+.PHONY: integration-up integration-test integration-down
 
 integration-up: render-nginx
 	@docker compose -p "$(NGINX_PROJECT)" -f "$(NGINX_COMPOSE)" up -d
@@ -34,6 +39,11 @@ integration-test: render-nginx
 		done; \
 		echo "Nginx did not become ready." >&2; \
 		docker compose -p "$(NGINX_PROJECT)" -f "$(NGINX_COMPOSE)" logs; exit 1
+
+# -----------------------------------------------------------------------------
+# Packaging and release
+# -----------------------------------------------------------------------------
+.PHONY: package
 
 package:
 	@PKL_PACKAGE_VERSION="$(VERSION)" $(PKL) project package --output-path dist
