@@ -1,8 +1,0 @@
-/// A minimal Docker Compose document rendered as YAML.
-amends "../src/Compose.pkl"
-
-services {
-  ["example"] = new Service {
-    image = "nginx:1.27"
-  }
-}

@@ -2,14 +2,21 @@
 
 Typed Docker Compose models for Pkl. Define services, ports, volumes, and networks as typed values, then render the Compose document directly as YAML.
 
-## Minimal service
+## Nginx example
 
 ```pkl
 amends "@docker/src/Compose.pkl"
 
 services {
-  ["example"] = new Service {
+  ["nginx"] = new Service {
+    // renovate: datasource=docker depName=nginx
     image = "nginx:1.27"
+    ports = new Listing {
+      new Port {
+        published = 18080
+        target = 80
+      }
+    }
   }
 }
 ```
@@ -19,18 +26,21 @@ The module emits a Compose document with the configured service under the top-le
 Render that file with:
 
 ```sh
-pkl eval -o out/compose.yaml examples/compose.pkl
+pkl eval -o out/nginx.yaml examples/nginx.pkl
 ```
 
 The generated file is `out/compose.yaml` and looks like:
 
 ```yaml
 services:
-  example:
+  nginx:
     image: nginx:1.27
+    ports:
+      - published: 18080
+        target: 80
 ```
 
-The integration example in `examples/nginx.pkl` adds a published port on `18080` and is the file used by `make integration-test`.
+This is also the file used by `make integration-test`.
 
 ## Service with deployment settings
 
@@ -66,7 +76,7 @@ Ports and volumes use Compose’s structured syntax. Port values are validated, 
 
 ## Validate locally
 
-Render the basic example with:
+Render the example with:
 
 ```sh
 make render

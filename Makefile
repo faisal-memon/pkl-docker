@@ -7,10 +7,10 @@ NGINX_PROJECT ?= pkl-docker-nginx
 .PHONY: render render-nginx validate package integration-up integration-test integration-down
 render:
 	@mkdir -p "$(OUT)"
-	@$(PKL) eval -o "$(OUT)/compose.yaml" examples/compose.pkl
+	@$(PKL) eval -o "$(OUT)/nginx.yaml" examples/nginx.pkl
 
 validate: render
-	@$(PKL) eval examples/compose.pkl >/dev/null
+	@$(PKL) eval examples/nginx.pkl >/dev/null
 	@echo "pkl-docker validation succeeded."
 
 render-nginx:
