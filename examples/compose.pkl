@@ -1,12 +1,9 @@
-amends "../src/ComposeRender.pkl"
+/// A simple Docker Compose document rendered as YAML.
+amends "../src/Compose.pkl"
 
-import "../src/Compose.pkl"
-
-config {
-  services = new Mapping {
-    ["example"] = new Compose.Service {
-      image = "nginx:1.27"
-      ports = new Listing { "8080:80" }
-    }
+services {
+  ["example"] = new Service {
+    image = "nginx:1.27"
+    ports = new Listing { "8080:80" }
   }
 }

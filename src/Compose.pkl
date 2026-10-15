@@ -1,11 +1,27 @@
-/// Generic Docker Compose value types shared by service modules.
+/// A typed Docker Compose document and its YAML renderer.
 open module pkldocker.Compose
 
-/// A complete Compose application.
-services: Mapping<String, Service>
+/// Services in this Compose application, keyed by service name.
+services: Mapping<String, Service> = new {}
 
 /// Optional top-level network definitions.
 networks: Mapping<String, Network>? = null
+
+/// The concrete document passed to the YAML renderer.
+local document: Document = new Document {
+  services = module.services
+  networks = module.networks
+}
+
+output {
+  value = document
+  renderer = new YamlRenderer {}
+}
+
+class Document {
+  services: Mapping<String, Service>
+  networks: Mapping<String, Network>? = null
+}
 
 /// A Docker Compose service definition.
 class Service {
