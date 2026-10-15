@@ -44,12 +44,6 @@ class Service {
   deploy: Deploy? = null
 }
 
-/// A Compose network definition.
-class Network {
-  /// Whether the network already exists outside this Compose project.
-  `external`: Boolean = false
-}
-
 // ── Supporting types ─────────────────────────────────────────────────────────
 
 /// A host-to-container port mapping.
@@ -71,6 +65,12 @@ class Volume {
 
   /// Whether the container can write to the mount.
   `read_only`: Boolean = false
+}
+
+/// A Compose network definition.
+class Network {
+  /// Whether the network already exists outside this Compose project.
+  `external`: Boolean = false
 }
 
 /// A dependency on another Compose service.
