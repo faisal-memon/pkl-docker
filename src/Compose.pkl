@@ -60,6 +60,9 @@ class Port {
 
 /// A Docker Compose volume mount.
 class Volume {
+  /// Compose volume type. Host paths use bind mounts by default.
+  type: String(matches(Regex("bind|volume|tmpfs"))) = "bind"
+
   /// Host path or named volume.
   source: String(!isEmpty)
 
