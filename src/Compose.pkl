@@ -7,8 +7,8 @@ services: Mapping<String, Service> = new {}
 /// Optional top-level network definitions.
 networks: Mapping<String, Network>? = null
 
-/// The concrete document passed to the YAML renderer.
-class Document {
+/// The complete Docker Compose file passed to the YAML renderer.
+class ComposeFile {
   services: Mapping<String, Service>
   networks: Mapping<String, Network>? = null
 }
@@ -88,12 +88,12 @@ class Device {
   capabilities: Listing<String> = new {}
 }
 
-local document: Document = new Document {
+local composeFile: ComposeFile = new ComposeFile {
   services = module.services
   networks = module.networks
 }
 
 output {
-  value = document
+  value = composeFile
   renderer = new YamlRenderer {}
 }
