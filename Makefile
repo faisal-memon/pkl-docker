@@ -4,12 +4,9 @@ VERSION ?= 0.1.0
 NGINX_COMPOSE ?= $(OUT)/nginx.yaml
 NGINX_PROJECT ?= pkl-docker-nginx
 
-.PHONY: render render-nginx validate package integration-up integration-test integration-down
-render:
-	@mkdir -p "$(OUT)"
-	@$(PKL) eval -o "$(OUT)/nginx.yaml" examples/nginx.pkl
+.PHONY: render-nginx validate package integration-up integration-test integration-down
 
-validate: render
+validate: render-nginx
 	@$(PKL) eval examples/nginx.pkl >/dev/null
 	@echo "pkl-docker validation succeeded."
 

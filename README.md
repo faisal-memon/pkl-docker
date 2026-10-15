@@ -79,7 +79,7 @@ Ports and volumes use Compose’s structured syntax. Port values are validated, 
 Render the example with:
 
 ```sh
-make render
+make render-nginx
 ```
 
 Run the end-to-end Nginx check with Docker available:
