@@ -36,6 +36,7 @@ jobs:
           RELEASE_TAG: ${{ steps.version.outputs.new-tag }}
         run: make package VERSION="${RELEASE_TAG#v}"
       - name: Publish release after successful packaging
+        id: publish
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -48,3 +49,9 @@ jobs:
             "$artifact" "$artifact.sha256" "$artifact.zip" "$artifact.zip.sha256" \
             --target "$RELEASE_COMMIT" --title "$RELEASE_TAG" --generate-notes --draft
           gh release edit "$RELEASE_TAG" --draft=false
+          echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          {
+            echo "## Published release"
+            echo ""
+            echo "**$RELEASE_TAG**"
+          } >> "$GITHUB_STEP_SUMMARY"
