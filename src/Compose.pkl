@@ -48,6 +48,9 @@ class Service {
 
 /// A host-to-container port mapping.
 class Port {
+  /// Optional host interface to bind.
+  `host_ip`: String? = null
+
   /// Port exposed on the host.
   published: Int(isBetween(1, 65535))
 
