@@ -8,6 +8,7 @@ NGINX_PROJECT ?= pkl-docker-nginx
 # Validation
 # -----------------------------------------------------------------------------
 .PHONY: render-nginx validate
+
 validate: render-nginx
 	@$(PKL) eval examples/nginx.pkl >/dev/null
 	@echo "pkl-docker validation succeeded."
@@ -20,6 +21,7 @@ render-nginx:
 # Integration testing
 # -----------------------------------------------------------------------------
 .PHONY: integration-up integration-test integration-down
+
 integration-up: render-nginx
 	@docker compose -p "$(NGINX_PROJECT)" -f "$(NGINX_COMPOSE)" up -d
 
@@ -42,5 +44,6 @@ integration-test: render-nginx
 # Packaging and release
 # -----------------------------------------------------------------------------
 .PHONY: package
+
 package:
 	@PKL_PACKAGE_VERSION="$(VERSION)" $(PKL) project package --output-path dist
