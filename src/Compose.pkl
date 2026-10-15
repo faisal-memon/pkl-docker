@@ -38,7 +38,8 @@ class Service {
   devices: Listing<String> = new {}
 
   /// Service dependencies.
-  dependsOn: Mapping<String, Dependency>? = null
+  /// Service dependencies, rendered using Compose's `depends_on` key.
+  `depends_on`: Mapping<String, Dependency>? = null
 
   /// Optional container deployment resources.
   deploy: Deploy? = null
