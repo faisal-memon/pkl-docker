@@ -11,12 +11,6 @@ networks: Mapping<String, Network>? = null
 
 // ── Top-level Compose types ──────────────────────────────────────────────────
 
-/// The complete Docker Compose file passed to the YAML renderer.
-class ComposeFile {
-  services: Mapping<String, Service>
-  networks: Mapping<String, Network>?
-}
-
 /// A Docker Compose service definition.
 class Service {
   /// Container image reference.
@@ -116,6 +110,12 @@ class Device {
 }
 
 // ── YAML output ──────────────────────────────────────────────────────────────
+
+/// The complete Docker Compose file passed to the YAML renderer.
+class ComposeFile {
+  services: Mapping<String, Service>
+  networks: Mapping<String, Network>?
+}
 
 local composeFile: ComposeFile = new ComposeFile {
   services = module.services
