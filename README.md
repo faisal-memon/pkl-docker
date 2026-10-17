@@ -72,7 +72,7 @@ networks {
 }
 ```
 
-Ports and volumes use Compose’s structured syntax. Volume mounts default to the `bind` type, port values are validated, and a port can omit `published` when it should remain internal to the Compose network.
+Ports and volumes use Compose’s structured syntax. Volume mounts default to the `bind` type, port values are validated, and a port can omit `published` when it should remain internal to the Compose network. Services can also list `env_file` paths; Compose reads those files at container creation, keeping secret values out of the generated YAML.
 
 ## Validate locally
 

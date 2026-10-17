@@ -37,6 +37,9 @@ class Service {
   /// Environment variables.
   environment: Mapping<String, String>? = null
 
+  /// Environment files loaded by Docker Compose for this service.
+  `env_file`: Listing<String>? = null
+
   /// Devices exposed to the service.
   devices: Listing<String> = new {}
 
