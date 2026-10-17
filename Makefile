@@ -7,15 +7,21 @@ NGINX_PROJECT ?= pkl-docker-nginx
 # -----------------------------------------------------------------------------
 # Validation
 # -----------------------------------------------------------------------------
-.PHONY: render-nginx validate
+.PHONY: render-nginx render-host-network validate
 
-validate: render-nginx
+validate: render-nginx render-host-network
 	@$(PKL) eval examples/nginx.pkl >/dev/null
+	@$(PKL) eval examples/host-network.pkl >/dev/null
+	@docker compose -f "$(OUT)/host-network.yaml" config --quiet
 	@echo "pkl-docker validation succeeded."
 
 render-nginx:
 	@mkdir -p "$(OUT)"
 	@$(PKL) eval -o "$(NGINX_COMPOSE)" examples/nginx.pkl
+
+render-host-network:
+	@mkdir -p "$(OUT)"
+	@$(PKL) eval -o "$(OUT)/host-network.yaml" examples/host-network.pkl
 
 # -----------------------------------------------------------------------------
 # Integration testing

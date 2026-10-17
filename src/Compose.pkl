@@ -34,6 +34,9 @@ class Service {
   /// Networks attached to the service.
   networks: Listing<String> = new {}
 
+  /// Network mode, such as host or none. Mutually exclusive with networks.
+  `network_mode`: String? = null
+
   /// Environment variables.
   environment: Mapping<String, String>? = null
 

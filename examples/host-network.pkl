@@ -1,0 +1,9 @@
+/// A host-network service showing Docker Compose network mode syntax.
+amends "../src/Compose.pkl"
+
+services {
+  ["updater"] = new Service {
+    image = "alpine:3.20"
+    `network_mode` = "host"
+  }
+}
