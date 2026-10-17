@@ -74,6 +74,10 @@ networks {
 
 Ports and volumes use Compose’s structured syntax. Volume mounts default to the `bind` type, port values are validated, and a port can omit `published` when it should remain internal to the Compose network. Services can also list `env_file` paths; Compose reads those files at container creation, keeping secret values out of the generated YAML.
 
+For host networking, set `network_mode = "host"` on the service and leave
+`networks` empty. Docker Compose does not treat the special host network like a
+user-defined external network.
+
 ## Validate locally
 
 Render the example with:
