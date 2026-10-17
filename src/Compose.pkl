@@ -13,6 +13,9 @@ networks: Mapping<String, Network>? = null
 
 /// A Docker Compose service definition.
 class Service {
+  /// Optional explicit container name.
+  `container_name`: String? = null
+
   /// Container image reference.
   image: String(!isEmpty)
 
@@ -40,6 +43,9 @@ class Service {
   /// Service dependencies.
   /// Service dependencies, rendered using Compose's `depends_on` key.
   `depends_on`: Mapping<String, Dependency>? = null
+
+  /// Optional health check configuration.
+  healthcheck: Healthcheck? = null
 
   /// Optional container deployment resources.
   deploy: Deploy? = null
@@ -72,6 +78,21 @@ class Volume {
 
   /// Whether the container can write to the mount.
   `read_only`: Boolean = false
+}
+
+/// Container health-check configuration.
+class Healthcheck {
+  /// Command and arguments executed by the health check.
+  test: Listing<String>
+
+  /// Time between health checks.
+  interval: String? = null
+
+  /// Maximum time allowed for one check.
+  timeout: String? = null
+
+  /// Number of consecutive failures before unhealthy.
+  retries: Int(isBetween(1, 255))? = null
 }
 
 /// A Compose network definition.
