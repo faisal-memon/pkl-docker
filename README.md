@@ -11,6 +11,7 @@ services {
   ["nginx"] = new Service {
     // renovate: datasource=docker depName=nginx
     image = "nginx:1.27"
+    labels = new Mapping { ["example.role"] = "web" }
     ports = new Listing {
       new Port {
         published = 18080
@@ -50,6 +51,7 @@ amends "@docker/src/Compose.pkl"
 services {
   ["web"] = new Service {
     image = "nginx:1.27"
+    labels = new Mapping { ["example.role"] = "web" }
     ports = new Listing {
       new Port {
         published = 8080

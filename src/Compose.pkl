@@ -37,6 +37,9 @@ class Service {
   /// Network mode, such as host or none. Mutually exclusive with networks.
   `network_mode`: String? = null
 
+  /// Docker metadata labels.
+  labels: Mapping<String, String>? = null
+
   /// Environment variables.
   environment: Mapping<String, String>? = null
 

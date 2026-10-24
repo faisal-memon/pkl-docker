@@ -5,6 +5,7 @@ services {
   ["nginx"] = new Service {
     // renovate: datasource=docker depName=nginx
     image = "nginx:1.27"
+    labels = new Mapping { ["example.role"] = "web" }
     `env_file` = new Listing { "../examples/nginx.env" }
     ports = new Listing {
       new Port {
