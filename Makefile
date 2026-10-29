@@ -3,15 +3,17 @@ OUT ?= out
 VERSION ?= 0.1.0
 NGINX_COMPOSE ?= $(OUT)/nginx.yaml
 NGINX_PROJECT ?= pkl-docker-nginx
+CAPABILITIES_COMPOSE ?= $(OUT)/linux-capabilities.yaml
 
 # -----------------------------------------------------------------------------
 # Validation
 # -----------------------------------------------------------------------------
-.PHONY: render-nginx render-host-network validate
+.PHONY: render-nginx render-host-network render-linux-capabilities validate
 
-validate: render-nginx render-host-network
+validate: render-nginx render-host-network render-linux-capabilities
 	@$(PKL) eval examples/nginx.pkl >/dev/null
 	@$(PKL) eval examples/host-network.pkl >/dev/null
+	@docker compose -f "$(CAPABILITIES_COMPOSE)" config --quiet
 	@docker compose -f "$(OUT)/host-network.yaml" config --quiet
 	@echo "pkl-docker validation succeeded."
 
@@ -22,6 +24,10 @@ render-nginx:
 render-host-network:
 	@mkdir -p "$(OUT)"
 	@$(PKL) eval -o "$(OUT)/host-network.yaml" examples/host-network.pkl
+
+render-linux-capabilities:
+	@mkdir -p "$(OUT)"
+	@$(PKL) eval -o "$(CAPABILITIES_COMPOSE)" examples/linux-capabilities.pkl
 
 # -----------------------------------------------------------------------------
 # Integration testing

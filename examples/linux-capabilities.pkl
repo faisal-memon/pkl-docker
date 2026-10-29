@@ -1,0 +1,10 @@
+/// Compose service demonstrating a Linux capability.
+amends "../src/Compose.pkl"
+
+services {
+  ["metrics"] = new Service {
+    image = "busybox:1.37"
+    `cap_add` = new Listing { "SYS_ADMIN" }
+    command = new Listing { "true" }
+  }
+}
