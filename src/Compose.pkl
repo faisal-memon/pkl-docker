@@ -46,6 +46,9 @@ class Service {
   /// Environment files loaded by Docker Compose for this service.
   `env_file`: Listing<String>? = null
 
+  /// Linux capabilities to add to the container.
+  `cap_add`: Listing<String> = new {}
+
   /// Devices exposed to the service.
   devices: Listing<String> = new {}
 
