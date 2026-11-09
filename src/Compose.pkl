@@ -40,6 +40,9 @@ class Service {
   /// Network mode, such as host or none. Mutually exclusive with networks.
   `network_mode`: String? = null
 
+  /// Run the container with extended host privileges.
+  privileged: Boolean = false
+
   /// Docker metadata labels.
   labels: Mapping<String, String>? = null
 
