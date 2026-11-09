@@ -19,6 +19,9 @@ class Service {
   /// Container image reference.
   image: String(!isEmpty)
 
+  /// Additional host entries, in Compose's `host:ip` or `host:host-gateway` form.
+  `extra_hosts`: Listing<String> = new {}
+
   /// Optional command arguments.
   command: Listing<String>? = null
 
