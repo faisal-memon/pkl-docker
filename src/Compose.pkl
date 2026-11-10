@@ -9,6 +9,9 @@ services: Mapping<String, Service> = new {}
 /// Optional top-level network definitions.
 networks: Mapping<String, Network>? = null
 
+/// Optional top-level named volume definitions.
+volumes: Mapping<String, NamedVolume>? = null
+
 // ── Top-level Compose types ──────────────────────────────────────────────────
 
 /// A Docker Compose service definition.
@@ -125,6 +128,15 @@ class Network {
   `external`: Boolean = false
 }
 
+/// A named Docker volume, optionally referring to an externally managed volume.
+class NamedVolume {
+  /// Optional Docker volume name when it differs from the Compose key.
+  name: String? = null
+
+  /// Whether the volume is managed outside this Compose project.
+  `external`: Boolean = false
+}
+
 /// A dependency on another Compose service.
 class Dependency {
   /// Optional dependency health condition.
@@ -166,6 +178,7 @@ output {
   value = new Dynamic {
     services = module.services
     networks = module.networks
+    volumes = module.volumes
   }
   renderer = new YamlRenderer {}
 }
