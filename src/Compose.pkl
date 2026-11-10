@@ -19,8 +19,14 @@ class Service {
   /// Container image reference.
   image: String(!isEmpty)
 
+  /// Run the container with an init process as PID 1.
+  init: Boolean = false
+
   /// Additional host entries, in Compose's `host:ip` or `host:host-gateway` form.
   `extra_hosts`: Listing<String> = new {}
+
+  /// DNS servers used by the container.
+  dns: Listing<String> = new {}
 
   /// Optional command arguments.
   command: Listing<String>? = null
