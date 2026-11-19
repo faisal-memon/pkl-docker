@@ -1,0 +1,2110 @@
+/// Compose Specification
+///
+/// The Compose file is a YAML file defining a multi-containers based application.
+///
+/// This module was generated from JSON Schema from
+/// <https://raw.githubusercontent.com/compose-spec/compose-spec/main/schema/compose-spec.json>.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+module ComposeSpec
+
+/// declared for backward compatibility, ignored. Please remove it.
+@Deprecated
+version: String?
+
+/// define the Compose project name, until user defines one explicitly.
+name: String?
+
+/// compose sub-projects to be included.
+include: Listing<Include>?
+
+/// The services that will be used by your application.
+services: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Service>?
+
+/// Language models that will be used by your application.
+models: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Model>?
+
+/// Networks that are shared among multiple services.
+networks: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Network>?
+
+/// Named volumes that are shared among multiple services.
+volumes: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), ItemVolume>?
+
+/// Secrets that are shared among multiple services.
+secrets: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Secret>?
+
+/// Configurations that are shared among multiple services.
+configs: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), ItemConfig>?
+
+/// Jobs are containers that run to completion.
+jobs: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Job>?
+
+/// Attributes of a container specification shared by anything that runs a container: services, jobs, and
+/// run-to-completion init containers (pre_start hooks).
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class ContainerSpec {
+  annotations: ListOrDict?
+
+  /// Block IO configuration for the service.
+  blkio_config: BlkioConfig?
+
+  /// Add Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_add: Listing<String>(isDistinct)?
+
+  /// Drop Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_drop: Listing<String>(isDistinct)?
+
+  /// Specify the cgroup namespace to join. Use 'host' to use the host's cgroup namespace, or 'private'
+  /// to use a private cgroup namespace.
+  cgroup: ("host"|"private")?
+
+  /// Specify an optional parent cgroup for the container.
+  cgroup_parent: String?
+
+  /// Override the default command declared by the container image, for example 'CMD' in Dockerfile.
+  command: Command?
+
+  /// Grant access to Configs on a per-service basis.
+  configs: ServiceConfigOrSecret?
+
+  /// Number of usable CPUs.
+  cpu_count: (String|Int(isPositive))?
+
+  /// Percentage of CPU resources to use.
+  cpu_percent: (String|Int(isBetween(0, 100)))?
+
+  /// CPU shares (relative weight) for the container.
+  cpu_shares: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) quota.
+  cpu_quota: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) period.
+  cpu_period: (Number|String)?
+
+  /// Limit the CPU real-time period in microseconds or a duration.
+  cpu_rt_period: (Number|String)?
+
+  /// Limit the CPU real-time runtime in microseconds or a duration.
+  cpu_rt_runtime: (Number|String)?
+
+  /// Number of CPUs to use. A floating-point value is supported to request partial CPUs.
+  cpus: (Number|String)?
+
+  /// CPUs in which to allow execution (0-3, 0,1).
+  cpuset: String?
+
+  /// Configure the credential spec for managed service account.
+  credential_spec: CredentialSpec?
+
+  /// Add rules to the cgroup allowed devices list.
+  device_cgroup_rules: ListOfStrings?
+
+  /// List of device mappings for the container.
+  devices: Listing<String|`[]Alternate1`>?
+
+  /// Custom DNS servers to set for the service container.
+  dns: StringOrList?
+
+  /// Custom DNS options to be passed to the container's DNS resolver.
+  dns_opt: Listing<String>(isDistinct)?
+
+  /// Custom DNS search domains to set on the service container.
+  dns_search: StringOrList?
+
+  /// Custom domain name to use for the service container.
+  domainname: String?
+
+  /// Override the default entrypoint declared by the container image, for example 'ENTRYPOINT' in
+  /// Dockerfile.
+  entrypoint: Command?
+
+  /// Add environment variables from a file or multiple files. Can be a single file path or a list of
+  /// file paths.
+  env_file: EnvFile?
+
+  /// Add metadata to containers using files containing Docker labels.
+  label_file: LabelFile?
+
+  /// Add environment variables. You can use either an array or a list of KEY=VAL pairs.
+  environment: ListOrDict?
+
+  /// Add hostname mappings to the container network interface configuration.
+  extra_hosts: ExtraHosts?
+
+  /// Define GPU devices to use. Can be set to 'all' to use all GPUs, or a list of specific GPU devices.
+  gpus: Gpus?
+
+  /// Add additional groups which user inside the container should be member of.
+  group_add: Listing<String|Number>(isDistinct)?
+
+  /// Define a custom hostname for the service container.
+  hostname: String?
+
+  /// Specify the image to start the container from. Can be a repository/tag, a digest, or a local image
+  /// ID.
+  image: String?
+
+  /// Run as an init process inside the container that forwards signals and reaps processes.
+  init: (Boolean|String)?
+
+  /// IPC sharing mode for the service container. Use 'host' to share the host's IPC namespace,
+  /// 'service:[service_name]' to share with another service, or 'shareable' to allow other services to
+  /// share this service's IPC namespace.
+  ipc: String?
+
+  /// Container isolation technology to use. Supported values are platform-specific.
+  isolation: String?
+
+  /// Add metadata to containers using Docker labels. You can use either an array or a list.
+  labels: ListOrDict?
+
+  /// Logging configuration for the service.
+  logging: Logging?
+
+  /// Container MAC address to set.
+  mac_address: String?
+
+  /// Memory limit for the container. A string value can use suffix like '2g' for 2 gigabytes.
+  mem_limit: (Int|String)?
+
+  /// Memory reservation for the container.
+  mem_reservation: (String|Int)?
+
+  /// Container memory swappiness as percentage (0 to 100).
+  mem_swappiness: (Int|String)?
+
+  /// Amount of memory the container is allowed to swap to disk. Set to -1 to enable unlimited swap.
+  memswap_limit: (Int|String)?
+
+  /// Network mode. Values can be 'bridge', 'host', 'none', 'service:[service name]', or
+  /// 'container:[container name]'.
+  network_mode: String?
+
+  /// AI Models to use, referencing entries under the top-level models key.
+  models: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), ModelsAlternate1Alternate0|Null>)?
+
+  /// Networks to join, referencing entries under the top-level networks key. Can be a list of network
+  /// names or a mapping of network name to network configuration.
+  networks: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), NetworksAlternate1Alternate0|Null>)?
+
+  /// Disable OOM Killer for the container.
+  oom_kill_disable: (Boolean|String)?
+
+  /// Tune host's OOM preferences for the container (accepts -1000 to 1000).
+  oom_score_adj: (String|Int(isBetween(-1000, 1000)))?
+
+  /// PID mode for container.
+  pid: String?
+
+  /// Tune a container's PIDs limit. Set to -1 for unlimited PIDs.
+  pids_limit: (Number|String)?
+
+  /// Target platform to run on, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
+  platform: String?
+
+  /// Give extended privileges to the service container.
+  privileged: (Boolean|String)?
+
+  /// Policy for pulling images. Options include: 'always', 'never', 'if_not_present', 'missing',
+  /// 'build', or time-based refresh policies.
+  pull_policy: String(matches(Regex("^(always|never|build|if_not_present|missing|refresh|daily|weekly|every_([0-9]+[wdhms])+)$")))?
+
+  /// Time after which to refresh the image. Used with pull_policy=refresh.
+  pull_refresh_after: String?
+
+  /// Mount the container's filesystem as read only.
+  read_only: (Boolean|String)?
+
+  /// Runtime to use for this container, e.g., 'runc'.
+  runtime: String?
+
+  /// Override the default labeling scheme for each container.
+  security_opt: Listing<String>(isDistinct)?
+
+  /// Size of /dev/shm. A string value can use suffix like '2g' for 2 gigabytes.
+  shm_size: (Int|String)?
+
+  /// Grant access to Secrets on a per-service basis.
+  secrets: ServiceConfigOrSecret?
+
+  /// Kernel parameters to set in the container. You can use either an array or a list.
+  sysctls: ListOrDict?
+
+  /// Time to wait for the container to stop gracefully before sending SIGKILL (e.g., '1s', '1m30s').
+  stop_grace_period: String?
+
+  /// Signal to stop the container (e.g., 'SIGTERM', 'SIGINT').
+  stop_signal: String?
+
+  /// Storage driver options for the container.
+  storage_opt: Mapping<String(matches(Regex("^.+$"))), (String|Number)?>?
+
+  /// Mount a temporary filesystem (tmpfs) into the container. Can be a single value or a list.
+  tmpfs: StringOrList?
+
+  /// Override the default ulimits for a container.
+  ulimits: Ulimits?
+
+  /// Set the initial umask for the container process. When omitted or null, no mask is set and the
+  /// runtime's own behavior applies; an explicit 0 masks no permission bits.
+  umask: (UInt32|String)?
+
+  /// Bind mount Docker API socket and required auth.
+  use_api_socket: Boolean?
+
+  /// Username or UID to run the container process as.
+  user: String?
+
+  /// UTS namespace to use. 'host' shares the host's UTS namespace.
+  uts: String?
+
+  /// User namespace to use. 'host' shares the host's user namespace.
+  userns_mode: String?
+
+  /// Mount host paths or named volumes accessible to the container. Short syntax
+  /// (VOLUME:CONTAINER_PATH[:MODE])
+  volumes: Listing<String|`Volume[]Alternate1`>(isDistinct)?
+
+  /// Mount volumes from another service or container. Optionally specify read-only access (ro) or
+  /// read-write (rw).
+  volumes_from: Listing<String>(isDistinct)?
+
+  /// The working directory in which the entrypoint or command will be run
+  working_dir: String?
+}
+
+/// Block IO configuration for the service.
+class BlkioConfig {
+  /// Limit read rate (bytes per second) from a device.
+  device_read_bps: Listing<BlkioLimit>?
+
+  /// Limit read rate (IO per second) from a device.
+  device_read_iops: Listing<BlkioLimit>?
+
+  /// Limit write rate (bytes per second) to a device.
+  device_write_bps: Listing<BlkioLimit>?
+
+  /// Limit write rate (IO per second) to a device.
+  device_write_iops: Listing<BlkioLimit>?
+
+  /// Block IO weight (relative weight) for the service, between 10 and 1000.
+  weight: (Int|String)?
+
+  /// Block IO weight (relative weight) for specific devices.
+  weight_device: Listing<BlkioWeight>?
+}
+
+/// Configure the credential spec for managed service account.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class CredentialSpec {
+  /// The name of the credential spec Config to use.
+  config: String?
+
+  /// Path to a credential spec file.
+  file: String?
+
+  /// Path to a credential spec in the Windows registry.
+  registry: String?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class `[]Alternate1` {
+  /// Path on the host to the device.
+  source: String
+
+  /// Path in the container where the device will be mapped.
+  target: String?
+
+  /// Cgroup permissions for the device (rwm).
+  permissions: String?
+}
+
+/// Logging configuration for the service.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Logging {
+  /// Logging driver to use, such as 'json-file', 'syslog', 'journald', etc.
+  driver: String?
+
+  /// Options for the logging driver.
+  options: Mapping<String(matches(Regex("^.+$"))), (String|Number)?>?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class ModelsAlternate1Alternate0 {
+  /// Environment variable set to AI model endpoint.
+  endpoint_var: String?
+
+  /// Environment variable set to AI model name.
+  model_var: String?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class NetworksAlternate1Alternate0 {
+  /// Alternative hostnames for this service on the network.
+  aliases: ListOfStrings?
+
+  /// Interface network name used to connect to network
+  interface_name: String?
+
+  /// Specify a static IPv4 address for this service on this network.
+  ipv4_address: String?
+
+  /// Specify a static IPv6 address for this service on this network.
+  ipv6_address: String?
+
+  /// List of link-local IPs.
+  link_local_ips: ListOfStrings?
+
+  /// Specify a MAC address for this service on this network.
+  mac_address: String?
+
+  /// Driver options for this network.
+  driver_opts: Mapping<String(matches(Regex("^.+$"))), String|Number>?
+
+  /// Specify the priority for the network connection.
+  priority: Number?
+
+  /// Specify the gateway priority for the network connection.
+  gw_priority: Number?
+
+  /// Register the service name as an alias on this network. Defaults to true.
+  use_service_name_alias: (Boolean|String)?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class `Volume[]Alternate1` {
+  /// Compose volume type. Host paths use bind mounts by default.
+  type: "bind"|"volume"|"tmpfs"|"cluster"|"npipe"|"image"
+
+  /// Host path or named volume.
+  source: String?
+
+  /// Path inside the container.
+  target: String?
+
+  /// Whether the container can write to the mount.
+  read_only: (Boolean|String)?
+
+  /// The consistency requirements for the mount. Available values are platform specific.
+  consistency: String?
+
+  /// Configuration specific to bind mounts.
+  bind: Bind?
+
+  /// Configuration specific to volume mounts.
+  volume: Volume?
+
+  /// Configuration specific to tmpfs mounts.
+  tmpfs: Tmpfs?
+
+  /// Configuration specific to image mounts.
+  image: Image?
+}
+
+/// Configuration specific to bind mounts.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Bind {
+  /// The propagation mode for the bind mount: 'shared', 'slave', 'private', 'rshared', 'rslave', or
+  /// 'rprivate'.
+  propagation: String?
+
+  /// Create the host path if it doesn't exist.
+  create_host_path: (Boolean|String)?
+
+  /// Recursively mount the source directory.
+  recursive: ("enabled"|"disabled"|"writable"|"readonly")?
+
+  /// SELinux relabeling options: 'z' for shared content, 'Z' for private unshared content.
+  selinux: ("z"|"Z")?
+}
+
+/// Configuration specific to volume mounts.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Volume {
+  /// Labels to apply to the volume.
+  labels: ListOrDict?
+
+  /// Flag to disable copying of data from a container when a volume is created.
+  nocopy: (Boolean|String)?
+
+  /// Path within the volume to mount instead of the volume root.
+  subpath: String?
+}
+
+/// Configuration specific to tmpfs mounts.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Tmpfs {
+  /// Size of the tmpfs mount in bytes.
+  size: (Int(isPositive)|String)?
+
+  /// File mode of the tmpfs in octal.
+  mode: (Number|String)?
+}
+
+/// Configuration specific to image mounts.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Image {
+  /// Path within the image to mount instead of the image root.
+  subpath: String?
+}
+
+/// Configuration for a service.
+class Service {
+  /// Configuration options for building the service's image.
+  build: (String|BuildAlternate1)?
+
+  /// Service dependencies.
+  /// Service dependencies, rendered using Compose's `depends_on` key.
+  depends_on: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), DependsOnAlternate1>)?
+
+  /// Optional health check configuration.
+  healthcheck: Healthcheck?
+
+  /// Published host ports.
+  ports: Listing<Number|String|`[]Alternate2`>(isDistinct)?
+
+  /// Expose ports without publishing them to the host machine - they'll only be accessible to linked
+  /// services.
+  expose: Listing<String|Number>(isDistinct)?
+
+  /// Keep STDIN open even if not attached.
+  stdin_open: (Boolean|String)?
+
+  /// Allocate a pseudo-TTY to service container.
+  tty: (Boolean|String)?
+
+  annotations: ListOrDict?
+
+  /// Block IO configuration for the service.
+  blkio_config: BlkioConfig?
+
+  /// Add Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_add: Listing<String>(isDistinct)?
+
+  /// Drop Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_drop: Listing<String>(isDistinct)?
+
+  /// Specify the cgroup namespace to join. Use 'host' to use the host's cgroup namespace, or 'private'
+  /// to use a private cgroup namespace.
+  cgroup: ("host"|"private")?
+
+  /// Specify an optional parent cgroup for the container.
+  cgroup_parent: String?
+
+  /// Optional command arguments.
+  command: Command?
+
+  /// Grant access to Configs on a per-service basis.
+  configs: ServiceConfigOrSecret?
+
+  /// Number of usable CPUs.
+  cpu_count: (String|Int(isPositive))?
+
+  /// Percentage of CPU resources to use.
+  cpu_percent: (String|Int(isBetween(0, 100)))?
+
+  /// CPU shares (relative weight) for the container.
+  cpu_shares: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) quota.
+  cpu_quota: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) period.
+  cpu_period: (Number|String)?
+
+  /// Limit the CPU real-time period in microseconds or a duration.
+  cpu_rt_period: (Number|String)?
+
+  /// Limit the CPU real-time runtime in microseconds or a duration.
+  cpu_rt_runtime: (Number|String)?
+
+  /// Number of CPUs to use. A floating-point value is supported to request partial CPUs.
+  cpus: (Number|String)?
+
+  /// CPUs in which to allow execution (0-3, 0,1).
+  cpuset: String?
+
+  /// Configure the credential spec for managed service account.
+  credential_spec: CredentialSpec?
+
+  /// Add rules to the cgroup allowed devices list.
+  device_cgroup_rules: ListOfStrings?
+
+  /// Devices exposed to the service.
+  devices: Listing<String|`[]Alternate1`>?
+
+  /// Custom DNS servers to set for the service container.
+  dns: StringOrList?
+
+  /// Custom DNS options to be passed to the container's DNS resolver.
+  dns_opt: Listing<String>(isDistinct)?
+
+  /// Custom DNS search domains to set on the service container.
+  dns_search: StringOrList?
+
+  /// Custom domain name to use for the service container.
+  domainname: String?
+
+  /// Override the default entrypoint declared by the container image, for example 'ENTRYPOINT' in
+  /// Dockerfile.
+  entrypoint: Command?
+
+  /// Add environment variables from a file or multiple files. Can be a single file path or a list of
+  /// file paths.
+  env_file: EnvFile?
+
+  /// Add metadata to containers using files containing Docker labels.
+  label_file: LabelFile?
+
+  /// Environment variables.
+  environment: ListOrDict?
+
+  /// Add hostname mappings to the container network interface configuration.
+  extra_hosts: ExtraHosts?
+
+  /// Define GPU devices to use. Can be set to 'all' to use all GPUs, or a list of specific GPU devices.
+  gpus: Gpus?
+
+  /// Add additional groups which user inside the container should be member of.
+  group_add: Listing<String|Number>(isDistinct)?
+
+  /// Define a custom hostname for the service container.
+  hostname: String?
+
+  /// Container image reference.
+  image: String?
+
+  /// Run as an init process inside the container that forwards signals and reaps processes.
+  init: (Boolean|String)?
+
+  /// IPC sharing mode for the service container. Use 'host' to share the host's IPC namespace,
+  /// 'service:[service_name]' to share with another service, or 'shareable' to allow other services to
+  /// share this service's IPC namespace.
+  ipc: String?
+
+  /// Container isolation technology to use. Supported values are platform-specific.
+  isolation: String?
+
+  /// Add metadata to containers using Docker labels. You can use either an array or a list.
+  labels: ListOrDict?
+
+  /// Logging configuration for the service.
+  logging: Logging?
+
+  /// Container MAC address to set.
+  mac_address: String?
+
+  /// Memory limit for the container. A string value can use suffix like '2g' for 2 gigabytes.
+  mem_limit: (Int|String)?
+
+  /// Memory reservation for the container.
+  mem_reservation: (String|Int)?
+
+  /// Container memory swappiness as percentage (0 to 100).
+  mem_swappiness: (Int|String)?
+
+  /// Amount of memory the container is allowed to swap to disk. Set to -1 to enable unlimited swap.
+  memswap_limit: (Int|String)?
+
+  /// Network mode. Values can be 'bridge', 'host', 'none', 'service:[service name]', or
+  /// 'container:[container name]'.
+  network_mode: String?
+
+  /// AI Models to use, referencing entries under the top-level models key.
+  models: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), ModelsAlternate1Alternate0|Null>)?
+
+  /// Networks attached to the service.
+  networks: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), NetworksAlternate1Alternate0|Null>)?
+
+  /// Disable OOM Killer for the container.
+  oom_kill_disable: (Boolean|String)?
+
+  /// Tune host's OOM preferences for the container (accepts -1000 to 1000).
+  oom_score_adj: (String|Int(isBetween(-1000, 1000)))?
+
+  /// PID mode for container.
+  pid: String?
+
+  /// Tune a container's PIDs limit. Set to -1 for unlimited PIDs.
+  pids_limit: (Number|String)?
+
+  /// Target platform to run on, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
+  platform: String?
+
+  /// Give extended privileges to the service container.
+  privileged: (Boolean|String)?
+
+  /// Policy for pulling images. Options include: 'always', 'never', 'if_not_present', 'missing',
+  /// 'build', or time-based refresh policies.
+  pull_policy: String(matches(Regex("^(always|never|build|if_not_present|missing|refresh|daily|weekly|every_([0-9]+[wdhms])+)$")))?
+
+  /// Time after which to refresh the image. Used with pull_policy=refresh.
+  pull_refresh_after: String?
+
+  /// Mount the container's filesystem as read only.
+  read_only: (Boolean|String)?
+
+  /// Runtime to use for this container, e.g., 'runc'.
+  runtime: String?
+
+  /// Override the default labeling scheme for each container.
+  security_opt: Listing<String>(isDistinct)?
+
+  /// Size of /dev/shm. A string value can use suffix like '2g' for 2 gigabytes.
+  shm_size: (Int|String)?
+
+  /// Grant access to Secrets on a per-service basis.
+  secrets: ServiceConfigOrSecret?
+
+  /// Kernel parameters to set in the container. You can use either an array or a list.
+  sysctls: ListOrDict?
+
+  /// Time to wait for the container to stop gracefully before sending SIGKILL (e.g., '1s', '1m30s').
+  stop_grace_period: String?
+
+  /// Signal to stop the container (e.g., 'SIGTERM', 'SIGINT').
+  stop_signal: String?
+
+  /// Storage driver options for the container.
+  storage_opt: Mapping<String(matches(Regex("^.+$"))), (String|Number)?>?
+
+  /// Mount a temporary filesystem (tmpfs) into the container. Can be a single value or a list.
+  tmpfs: StringOrList?
+
+  /// Override the default ulimits for a container.
+  ulimits: Ulimits?
+
+  /// Set the initial umask for the container process. When omitted or null, no mask is set and the
+  /// runtime's own behavior applies; an explicit 0 masks no permission bits.
+  umask: (UInt32|String)?
+
+  /// Bind mount Docker API socket and required auth.
+  use_api_socket: Boolean?
+
+  /// Username or UID to run the container process as.
+  user: String?
+
+  /// UTS namespace to use. 'host' shares the host's UTS namespace.
+  uts: String?
+
+  /// User namespace to use. 'host' shares the host's user namespace.
+  userns_mode: String?
+
+  /// Host and named volume mounts.
+  volumes: Listing<String|`Volume[]Alternate1`>(isDistinct)?
+
+  /// Mount volumes from another service or container. Optionally specify read-only access (ro) or
+  /// read-write (rw).
+  volumes_from: Listing<String>(isDistinct)?
+
+  /// The working directory in which the entrypoint or command will be run
+  working_dir: String?
+
+  /// Optional container deployment resources.
+  deploy: Deployment?
+
+  develop: Development?
+
+  /// List of profiles for this service. When profiles are specified, services are only started when the
+  /// profile is activated.
+  profiles: ListOfStrings?
+
+  /// Container restart policy.
+  restart: String?
+
+  /// Number of containers to deploy for this service.
+  scale: (Int|String)?
+
+  attach: (Boolean|String)?
+
+  /// Optional explicit container name.
+  container_name: String(matches(Regex("[a-zA-Z0-9][a-zA-Z0-9_.-]+")))?
+
+  /// Specify a service which will not be manage by Compose directly, and delegate its management to an
+  /// external provider.
+  provider: Provider?
+
+  /// Extend another service, in the current file or another file.
+  `extends`: (String|ExtendsAlternate1)?
+
+  /// Link to containers in another service. Either specify both the service name and a link alias
+  /// (SERVICE:ALIAS), or just the service name.
+  links: Listing<String>(isDistinct)?
+
+  /// Link to services started outside this Compose application. Specify services as
+  /// <service_name>:<alias>.
+  external_links: Listing<String>(isDistinct)?
+
+  /// Init containers to run to completion before the service container is started. Each step runs in its
+  /// own ephemeral container, in declared order; a non-zero exit fails the bring-up of the service and
+  /// its dependents.
+  pre_start: Listing<PreStartHook>?
+
+  /// Commands to run after the container starts. If any command fails, the container stops.
+  post_start: Listing<ServiceHook>?
+
+  /// Commands to run before the container stops. If any command fails, the container stop is aborted.
+  pre_stop: Listing<ServiceHook>?
+}
+
+/// Specify a service which will not be manage by Compose directly, and delegate its management to an
+/// external provider.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Provider {
+  /// External component used by Compose to manage setup and teardown lifecycle of the service.
+  type: String
+
+  /// Provider-specific options.
+  options: Mapping<String(matches(Regex("^.+$"))), String|Number|Boolean|Listing<String|Number|Boolean>>?
+}
+
+class ExtendsAlternate1 {
+  /// The name of the service to extend.
+  service: String
+
+  /// The file path where the service to extend is defined.
+  file: String?
+}
+
+/// Configuration for a job. Jobs are containers that run to completion.
+class Job {
+  /// Configuration options for building the service's image.
+  build: (String|BuildAlternate1)?
+
+  /// Express dependency between services. Service dependencies cause services to be started in
+  /// dependency order. The dependent service will wait for the dependency to be ready before starting.
+  depends_on: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), DependsOnAlternate1>)?
+
+  /// Configure a health check for the container to monitor its health status.
+  healthcheck: Healthcheck?
+
+  /// Expose container ports. Short format ([HOST:]CONTAINER[/PROTOCOL]).
+  ports: Listing<Number|String|`[]Alternate2`>(isDistinct)?
+
+  /// Expose ports without publishing them to the host machine - they'll only be accessible to linked
+  /// services.
+  expose: Listing<String|Number>(isDistinct)?
+
+  /// Keep STDIN open even if not attached.
+  stdin_open: (Boolean|String)?
+
+  /// Allocate a pseudo-TTY to service container.
+  tty: (Boolean|String)?
+
+  annotations: ListOrDict?
+
+  /// Block IO configuration for the service.
+  blkio_config: BlkioConfig?
+
+  /// Add Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_add: Listing<String>(isDistinct)?
+
+  /// Drop Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_drop: Listing<String>(isDistinct)?
+
+  /// Specify the cgroup namespace to join. Use 'host' to use the host's cgroup namespace, or 'private'
+  /// to use a private cgroup namespace.
+  cgroup: ("host"|"private")?
+
+  /// Specify an optional parent cgroup for the container.
+  cgroup_parent: String?
+
+  /// Override the default command declared by the container image, for example 'CMD' in Dockerfile.
+  command: Command?
+
+  /// Grant access to Configs on a per-service basis.
+  configs: ServiceConfigOrSecret?
+
+  /// Number of usable CPUs.
+  cpu_count: (String|Int(isPositive))?
+
+  /// Percentage of CPU resources to use.
+  cpu_percent: (String|Int(isBetween(0, 100)))?
+
+  /// CPU shares (relative weight) for the container.
+  cpu_shares: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) quota.
+  cpu_quota: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) period.
+  cpu_period: (Number|String)?
+
+  /// Limit the CPU real-time period in microseconds or a duration.
+  cpu_rt_period: (Number|String)?
+
+  /// Limit the CPU real-time runtime in microseconds or a duration.
+  cpu_rt_runtime: (Number|String)?
+
+  /// Number of CPUs to use. A floating-point value is supported to request partial CPUs.
+  cpus: (Number|String)?
+
+  /// CPUs in which to allow execution (0-3, 0,1).
+  cpuset: String?
+
+  /// Configure the credential spec for managed service account.
+  credential_spec: CredentialSpec?
+
+  /// Add rules to the cgroup allowed devices list.
+  device_cgroup_rules: ListOfStrings?
+
+  /// List of device mappings for the container.
+  devices: Listing<String|`[]Alternate1`>?
+
+  /// Custom DNS servers to set for the service container.
+  dns: StringOrList?
+
+  /// Custom DNS options to be passed to the container's DNS resolver.
+  dns_opt: Listing<String>(isDistinct)?
+
+  /// Custom DNS search domains to set on the service container.
+  dns_search: StringOrList?
+
+  /// Custom domain name to use for the service container.
+  domainname: String?
+
+  /// Override the default entrypoint declared by the container image, for example 'ENTRYPOINT' in
+  /// Dockerfile.
+  entrypoint: Command?
+
+  /// Add environment variables from a file or multiple files. Can be a single file path or a list of
+  /// file paths.
+  env_file: EnvFile?
+
+  /// Add metadata to containers using files containing Docker labels.
+  label_file: LabelFile?
+
+  /// Add environment variables. You can use either an array or a list of KEY=VAL pairs.
+  environment: ListOrDict?
+
+  /// Add hostname mappings to the container network interface configuration.
+  extra_hosts: ExtraHosts?
+
+  /// Define GPU devices to use. Can be set to 'all' to use all GPUs, or a list of specific GPU devices.
+  gpus: Gpus?
+
+  /// Add additional groups which user inside the container should be member of.
+  group_add: Listing<String|Number>(isDistinct)?
+
+  /// Define a custom hostname for the service container.
+  hostname: String?
+
+  /// Specify the image to start the container from. Can be a repository/tag, a digest, or a local image
+  /// ID.
+  image: String?
+
+  /// Run as an init process inside the container that forwards signals and reaps processes.
+  init: (Boolean|String)?
+
+  /// IPC sharing mode for the service container. Use 'host' to share the host's IPC namespace,
+  /// 'service:[service_name]' to share with another service, or 'shareable' to allow other services to
+  /// share this service's IPC namespace.
+  ipc: String?
+
+  /// Container isolation technology to use. Supported values are platform-specific.
+  isolation: String?
+
+  /// Add metadata to containers using Docker labels. You can use either an array or a list.
+  labels: ListOrDict?
+
+  /// Logging configuration for the service.
+  logging: Logging?
+
+  /// Container MAC address to set.
+  mac_address: String?
+
+  /// Memory limit for the container. A string value can use suffix like '2g' for 2 gigabytes.
+  mem_limit: (Int|String)?
+
+  /// Memory reservation for the container.
+  mem_reservation: (String|Int)?
+
+  /// Container memory swappiness as percentage (0 to 100).
+  mem_swappiness: (Int|String)?
+
+  /// Amount of memory the container is allowed to swap to disk. Set to -1 to enable unlimited swap.
+  memswap_limit: (Int|String)?
+
+  /// Network mode. Values can be 'bridge', 'host', 'none', 'service:[service name]', or
+  /// 'container:[container name]'.
+  network_mode: String?
+
+  /// AI Models to use, referencing entries under the top-level models key.
+  models: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), ModelsAlternate1Alternate0|Null>)?
+
+  /// Networks to join, referencing entries under the top-level networks key. Can be a list of network
+  /// names or a mapping of network name to network configuration.
+  networks: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), NetworksAlternate1Alternate0|Null>)?
+
+  /// Disable OOM Killer for the container.
+  oom_kill_disable: (Boolean|String)?
+
+  /// Tune host's OOM preferences for the container (accepts -1000 to 1000).
+  oom_score_adj: (String|Int(isBetween(-1000, 1000)))?
+
+  /// PID mode for container.
+  pid: String?
+
+  /// Tune a container's PIDs limit. Set to -1 for unlimited PIDs.
+  pids_limit: (Number|String)?
+
+  /// Target platform to run on, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
+  platform: String?
+
+  /// Give extended privileges to the service container.
+  privileged: (Boolean|String)?
+
+  /// Policy for pulling images. Options include: 'always', 'never', 'if_not_present', 'missing',
+  /// 'build', or time-based refresh policies.
+  pull_policy: String(matches(Regex("^(always|never|build|if_not_present|missing|refresh|daily|weekly|every_([0-9]+[wdhms])+)$")))?
+
+  /// Time after which to refresh the image. Used with pull_policy=refresh.
+  pull_refresh_after: String?
+
+  /// Mount the container's filesystem as read only.
+  read_only: (Boolean|String)?
+
+  /// Runtime to use for this container, e.g., 'runc'.
+  runtime: String?
+
+  /// Override the default labeling scheme for each container.
+  security_opt: Listing<String>(isDistinct)?
+
+  /// Size of /dev/shm. A string value can use suffix like '2g' for 2 gigabytes.
+  shm_size: (Int|String)?
+
+  /// Grant access to Secrets on a per-service basis.
+  secrets: ServiceConfigOrSecret?
+
+  /// Kernel parameters to set in the container. You can use either an array or a list.
+  sysctls: ListOrDict?
+
+  /// Time to wait for the container to stop gracefully before sending SIGKILL (e.g., '1s', '1m30s').
+  stop_grace_period: String?
+
+  /// Signal to stop the container (e.g., 'SIGTERM', 'SIGINT').
+  stop_signal: String?
+
+  /// Storage driver options for the container.
+  storage_opt: Mapping<String(matches(Regex("^.+$"))), (String|Number)?>?
+
+  /// Mount a temporary filesystem (tmpfs) into the container. Can be a single value or a list.
+  tmpfs: StringOrList?
+
+  /// Override the default ulimits for a container.
+  ulimits: Ulimits?
+
+  /// Set the initial umask for the container process. When omitted or null, no mask is set and the
+  /// runtime's own behavior applies; an explicit 0 masks no permission bits.
+  umask: (UInt32|String)?
+
+  /// Bind mount Docker API socket and required auth.
+  use_api_socket: Boolean?
+
+  /// Username or UID to run the container process as.
+  user: String?
+
+  /// UTS namespace to use. 'host' shares the host's UTS namespace.
+  uts: String?
+
+  /// User namespace to use. 'host' shares the host's user namespace.
+  userns_mode: String?
+
+  /// Mount host paths or named volumes accessible to the container. Short syntax
+  /// (VOLUME:CONTAINER_PATH[:MODE])
+  volumes: Listing<String|`Volume[]Alternate1`>(isDistinct)?
+
+  /// Mount volumes from another service or container. Optionally specify read-only access (ro) or
+  /// read-write (rw).
+  volumes_from: Listing<String>(isDistinct)?
+
+  /// The working directory in which the entrypoint or command will be run
+  working_dir: String?
+
+  /// List of profiles for this job. When profiles are specified, the job is only active when the profile
+  /// is activated.
+  profiles: ListOfStrings?
+
+  /// Extend another job, in the current file or another file.
+  `extends`: (String|ExtendsExtendsAlternate1)?
+
+  /// Trigger conditions for the job. At least one trigger attribute must be declared. Setting manual to
+  /// false forbids manual execution by an explicit run command.
+  triggers: Triggers
+}
+
+class ExtendsExtendsAlternate1 {
+  /// The name of the job to extend.
+  service: String
+
+  /// The file path where the job to extend is defined.
+  file: String?
+}
+
+/// Trigger conditions for the job. At least one trigger attribute must be declared. Setting manual to
+/// false forbids manual execution by an explicit run command.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Triggers {
+  /// Whether the job can be triggered manually by an explicit run command. Defaults to true; an explicit
+  /// false forbids manual execution.
+  manual: (Boolean|String)?
+
+  /// List of schedules for the job.
+  schedule: Listing<String|Schedule>?
+}
+
+/// Schedule configuration for a job trigger.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Schedule {
+  /// Crontab expression to schedule the job (e.g. '0 * * * *' for every hour).
+  cron: String
+
+  /// Timezone used to evaluate the cron expression (e.g. 'Europe/Paris'). Defaults to the platform's
+  /// local timezone.
+  timezone: String?
+
+  /// Policy applied when the schedule fires while a previous run is still in progress: prevent the new
+  /// run ('forbid', the default) or queue it ('queue').
+  concurrency: ("forbid"|"queue")?
+
+  /// Policy applied to fires missed while the platform was unavailable: run a single catch-up ('one',
+  /// the default) or skip them ('skip').
+  missed_fires: ("one"|"skip")?
+}
+
+/// Configuration options to determine whether the container is healthy.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Healthcheck {
+  /// Disable any container-specified healthcheck. Set to true to disable.
+  disable: (Boolean|String)?
+
+  /// Time between health checks.
+  interval: String?
+
+  /// Number of consecutive failures before unhealthy.
+  retries: (Number|String)?
+
+  /// Command and arguments executed by the health check.
+  test: (String|Listing<String>)?
+
+  /// Maximum time allowed for one check.
+  timeout: String?
+
+  /// Start period for the container to initialize before starting health-retries countdown (e.g., '1s',
+  /// '1m30s'). Default: 0s.
+  start_period: String?
+
+  /// Time between running the check during the start period (e.g., '1s', '1m30s'). Default: interval
+  /// value.
+  start_interval: String?
+}
+
+/// Development configuration for the service, used for development workflows.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Development {
+  /// Configure watch mode for the service, which monitors file changes and performs actions in response.
+  watch: Listing<Watch>?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Watch {
+  /// Patterns to exclude from watching.
+  ignore: StringOrList?
+
+  /// Patterns to include in watching.
+  include: StringOrList?
+
+  /// Path to watch for changes.
+  path: String
+
+  /// Action to take when a change is detected: rebuild the container, sync files, restart the container,
+  /// sync and restart, or sync and execute a command.
+  action: "rebuild"|"sync"|"restart"|"sync+restart"|"sync+exec"
+
+  /// Target path in the container for sync operations.
+  target: String?
+
+  /// Command to execute when a change is detected and action is sync+exec.
+  exec: ServiceHook?
+
+  /// Ensure that an initial synchronization is done before starting watch mode for sync+x triggers
+  initial_sync: Boolean?
+}
+
+/// Deployment configuration for the service.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Deployment {
+  /// Deployment mode for the service: 'replicated' (default) or 'global'.
+  mode: String?
+
+  /// Endpoint mode for the service: 'vip' (default) or 'dnsrr'.
+  endpoint_mode: String?
+
+  /// Number of replicas of the service container to run.
+  replicas: (Int|String)?
+
+  /// Labels to apply to the service.
+  labels: ListOrDict?
+
+  /// Configuration for rolling back a service update.
+  rollback_config: RollbackConfig?
+
+  /// Configuration for updating a service.
+  update_config: UpdateConfig?
+
+  /// Resource reservations.
+  resources: Resources?
+
+  /// Restart policy for the service containers.
+  restart_policy: RestartPolicy?
+
+  /// Constraints and preferences for the platform to select a physical node to run service containers
+  placement: Placement?
+}
+
+/// Configuration for rolling back a service update.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class RollbackConfig {
+  /// The number of containers to rollback at a time. If set to 0, all containers rollback
+  /// simultaneously.
+  parallelism: (Int|String)?
+
+  /// The time to wait between each container group's rollback (e.g., '1s', '1m30s').
+  delay: String?
+
+  /// Action to take if a rollback fails: 'continue', 'pause'.
+  failure_action: String?
+
+  /// Duration to monitor each task for failures after it is created (e.g., '1s', '1m30s').
+  monitor: String?
+
+  /// Failure rate to tolerate during a rollback.
+  max_failure_ratio: (Number|String)?
+
+  /// Order of operations during rollbacks: 'stop-first' (default) or 'start-first'.
+  order: ("start-first"|"stop-first")?
+}
+
+/// Configuration for updating a service.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class UpdateConfig {
+  /// The number of containers to update at a time.
+  parallelism: (Int|String)?
+
+  /// The time to wait between updating a group of containers (e.g., '1s', '1m30s').
+  delay: String?
+
+  /// Action to take if an update fails: 'continue', 'pause', 'rollback'.
+  failure_action: String?
+
+  /// Duration to monitor each updated task for failures after it is created (e.g., '1s', '1m30s').
+  monitor: String?
+
+  /// Failure rate to tolerate during an update (0 to 1).
+  max_failure_ratio: (Number|String)?
+
+  /// Order of operations during updates: 'stop-first' (default) or 'start-first'.
+  order: ("start-first"|"stop-first")?
+}
+
+/// Resource constraints and reservations for the service.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Resources {
+  /// Resource limits for the service containers.
+  limits: Limits?
+
+  /// Resource reservations.
+  reservations: Reservations?
+}
+
+/// Resource limits for the service containers.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Limits {
+  /// Limit for how much of the available CPU resources, as number of cores, a container can use.
+  cpus: (Number|String)?
+
+  /// Limit on the amount of memory a container can allocate (e.g., '1g', '1024m').
+  memory: String?
+
+  /// Maximum number of PIDs available to the container.
+  pids: (Int|String)?
+}
+
+/// Resource reservations for the service containers.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Reservations {
+  /// Reservation for how much of the available CPU resources, as number of cores, a container can use.
+  cpus: (Number|String)?
+
+  /// Reservation on the amount of memory a container can allocate (e.g., '1g', '1024m').
+  memory: String?
+
+  /// User-defined resources to reserve.
+  generic_resources: GenericResources?
+
+  /// Device reservations such as NVIDIA GPUs.
+  devices: Devices?
+}
+
+/// Restart policy for the service containers.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class RestartPolicy {
+  /// Condition for restarting the container: 'none', 'on-failure', 'any'.
+  condition: String?
+
+  /// Delay between restart attempts (e.g., '1s', '1m30s').
+  delay: String?
+
+  /// Maximum number of restart attempts before giving up.
+  max_attempts: (Int|String)?
+
+  /// Time window used to evaluate the restart policy (e.g., '1s', '1m30s').
+  window: String?
+}
+
+/// Constraints and preferences for the platform to select a physical node to run service containers
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Placement {
+  /// Placement constraints for the service (e.g., 'node.role==manager').
+  constraints: Listing<String>?
+
+  /// Placement preferences for the service.
+  preferences: Listing<Preference>?
+
+  /// Maximum number of replicas of the service.
+  max_replicas_per_node: (Int|String)?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Preference {
+  /// Spread tasks evenly across values of the specified node label.
+  spread: String?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class GenericResource {
+  /// Specification for discrete (countable) resources.
+  discrete_resource_spec: DiscreteResourceSpec?
+}
+
+/// Specification for discrete (countable) resources.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class DiscreteResourceSpec {
+  /// Type of resource (e.g., 'GPU', 'FPGA', 'SSD').
+  kind: String?
+
+  /// Number of resources of this kind to reserve.
+  value: (Number|String)?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Device {
+  /// List of capabilities the device needs to have (e.g., 'gpu', 'compute', 'utility').
+  /// Device capabilities, such as gpu.
+  capabilities: ListOfStrings
+
+  /// Number of devices to reserve.
+  count: (String|Int)?
+
+  /// List of specific device IDs to reserve.
+  device_ids: ListOfStrings?
+
+  /// Device driver, such as nvidia.
+  driver: String?
+
+  /// Driver-specific options for the device.
+  options: ListOrDict?
+}
+
+class GpusAlternate1 {
+  /// Device capabilities, such as gpu.
+  capabilities: ListOfStrings?
+
+  /// Number of devices to reserve.
+  count: (String|Int)?
+
+  /// List of specific GPU device IDs to use.
+  device_ids: ListOfStrings?
+
+  /// GPU driver to use (e.g., 'nvidia').
+  driver: String?
+
+  /// Driver-specific options for the GPU.
+  options: ListOrDict?
+}
+
+class IncludeAlternate1 {
+  /// Path to the Compose application or sub-project files to include.
+  path: StringOrList?
+
+  /// Path to the environment files to use to define default values when interpolating variables in the
+  /// Compose files being parsed.
+  env_file: StringOrList?
+
+  /// Path to resolve relative paths set in the Compose file
+  project_directory: String?
+}
+
+/// Network configuration for the Compose application.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Network {
+  /// Custom name for this network.
+  name: String?
+
+  /// Specify which driver should be used for this network. Default is 'bridge'.
+  driver: String?
+
+  /// Specify driver-specific options defined as key/value pairs.
+  driver_opts: Mapping<String(matches(Regex("^.+$"))), String|Number>?
+
+  /// Custom IP Address Management configuration for this network.
+  ipam: Ipam?
+
+  /// Whether the network already exists outside this Compose project.
+  `external`: Boolean?
+
+  /// Create an externally isolated network.
+  internal: (Boolean|String)?
+
+  /// Enable IPv4 networking.
+  enable_ipv4: (Boolean|String)?
+
+  /// Enable IPv6 networking.
+  enable_ipv6: (Boolean|String)?
+
+  /// If true, standalone containers can attach to this network.
+  attachable: (Boolean|String)?
+
+  /// Add metadata to the network using labels.
+  labels: ListOrDict?
+}
+
+/// Custom IP Address Management configuration for this network.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Ipam {
+  /// Custom IPAM driver, instead of the default.
+  driver: String?
+
+  /// List of IPAM configuration blocks.
+  config: Listing<Config>?
+
+  /// Driver-specific options for the IPAM driver.
+  options: Mapping<String(matches(Regex("^.+$"))), String>?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Config {
+  /// Subnet in CIDR format that represents a network segment.
+  subnet: String?
+
+  /// Range of IPs from which to allocate container IPs.
+  ip_range: String?
+
+  /// IPv4 or IPv6 gateway for the subnet.
+  gateway: String?
+
+  /// Auxiliary IPv4 or IPv6 addresses used by Network driver.
+  aux_addresses: Mapping<String(matches(Regex("^.+$"))), String>?
+}
+
+/// Specifies that this network already exists and was created outside of Compose.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class External {
+  /// Specifies the name of the external network. Deprecated: use the 'name' property instead.
+  @Deprecated
+  name: String?
+}
+
+/// Volume configuration for the Compose application.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class ItemVolume {
+  /// Custom name for this volume.
+  name: String?
+
+  /// Specify which volume driver should be used for this volume.
+  driver: String?
+
+  /// Specify driver-specific options.
+  driver_opts: Mapping<String(matches(Regex("^.+$"))), String|Number>?
+
+  /// Specifies that this volume already exists and was created outside of Compose.
+  `external`: VolumeExternal?
+
+  /// Add metadata to the volume using labels.
+  labels: ListOrDict?
+}
+
+/// Specifies that this volume already exists and was created outside of Compose.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class VolumeExternal {
+  /// Specifies the name of the external volume. Deprecated: use the 'name' property instead.
+  @Deprecated
+  name: String?
+}
+
+/// Secret configuration for the Compose application.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Secret {
+  /// Custom name for this secret.
+  name: String?
+
+  /// Name of an environment variable from which to get the secret value.
+  environment: String?
+
+  /// Path to a file containing the secret value.
+  file: String?
+
+  /// Specifies that this secret already exists and was created outside of Compose.
+  `external`: SecretExternal?
+
+  /// Add metadata to the secret using labels.
+  labels: ListOrDict?
+
+  /// Specify which secret driver should be used for this secret.
+  driver: String?
+
+  /// Specify driver-specific options.
+  driver_opts: Mapping<String(matches(Regex("^.+$"))), String|Number>?
+
+  /// Driver to use for templating the secret's value.
+  template_driver: String?
+}
+
+/// Specifies that this secret already exists and was created outside of Compose.
+class SecretExternal {
+  /// Specifies the name of the external secret.
+  name: String?
+}
+
+/// Config configuration for the Compose application.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class ItemConfig {
+  /// Custom name for this config.
+  name: String?
+
+  /// Inline content of the config.
+  content: String?
+
+  /// Name of an environment variable from which to get the config value.
+  environment: String?
+
+  /// Path to a file containing the config value.
+  file: String?
+
+  /// Specifies that this config already exists and was created outside of Compose.
+  `external`: ConfigExternal?
+
+  /// Add metadata to the config using labels.
+  labels: ListOrDict?
+
+  /// Driver to use for templating the config's value.
+  template_driver: String?
+}
+
+/// Specifies that this config already exists and was created outside of Compose.
+class ConfigExternal {
+  /// Specifies the name of the external config. Deprecated: use the 'name' property instead.
+  @Deprecated
+  name: String?
+}
+
+/// Language Model for the Compose application.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class Model {
+  /// Custom name for this model.
+  name: String?
+
+  /// Language Model to run.
+  model: String
+
+  context_size: Int?
+
+  /// Raw runtime flags to pass to the inference engine.
+  runtime_flags: Listing<String>?
+}
+
+/// Configuration for service lifecycle hooks, which are commands executed at specific points in a
+/// container's lifecycle.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class ServiceHook {
+  /// Command to execute as part of the hook.
+  command: Command
+
+  /// User to run the command as.
+  user: String?
+
+  /// Whether to run the command with extended privileges.
+  privileged: (Boolean|String)?
+
+  /// Working directory for the command.
+  working_dir: String?
+
+  /// Environment variables for the command.
+  environment: ListOrDict?
+}
+
+/// Configuration for a pre_start init container, run to completion before the service container starts.
+/// Accepts the full container specification; per #656, attributes not set explicitly are inherited from
+/// the service: collection attributes are completed by the hook's declarations (which win on conflicts),
+/// scalar attributes are replaced.
+class PreStartHook {
+  annotations: ListOrDict?
+
+  /// Block IO configuration for the service.
+  blkio_config: BlkioConfig?
+
+  /// Add Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_add: Listing<String>(isDistinct)?
+
+  /// Drop Linux capabilities. For example, 'CAP_SYS_ADMIN', 'SYS_ADMIN', or 'NET_ADMIN'.
+  cap_drop: Listing<String>(isDistinct)?
+
+  /// Specify the cgroup namespace to join. Use 'host' to use the host's cgroup namespace, or 'private'
+  /// to use a private cgroup namespace.
+  cgroup: ("host"|"private")?
+
+  /// Specify an optional parent cgroup for the container.
+  cgroup_parent: String?
+
+  /// Override the default command declared by the container image, for example 'CMD' in Dockerfile.
+  command: Command?
+
+  /// Grant access to Configs on a per-service basis.
+  configs: ServiceConfigOrSecret?
+
+  /// Number of usable CPUs.
+  cpu_count: (String|Int(isPositive))?
+
+  /// Percentage of CPU resources to use.
+  cpu_percent: (String|Int(isBetween(0, 100)))?
+
+  /// CPU shares (relative weight) for the container.
+  cpu_shares: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) quota.
+  cpu_quota: (Number|String)?
+
+  /// Limit the CPU CFS (Completely Fair Scheduler) period.
+  cpu_period: (Number|String)?
+
+  /// Limit the CPU real-time period in microseconds or a duration.
+  cpu_rt_period: (Number|String)?
+
+  /// Limit the CPU real-time runtime in microseconds or a duration.
+  cpu_rt_runtime: (Number|String)?
+
+  /// Number of CPUs to use. A floating-point value is supported to request partial CPUs.
+  cpus: (Number|String)?
+
+  /// CPUs in which to allow execution (0-3, 0,1).
+  cpuset: String?
+
+  /// Configure the credential spec for managed service account.
+  credential_spec: CredentialSpec?
+
+  /// Add rules to the cgroup allowed devices list.
+  device_cgroup_rules: ListOfStrings?
+
+  /// List of device mappings for the container.
+  devices: Listing<String|`[]Alternate1`>?
+
+  /// Custom DNS servers to set for the service container.
+  dns: StringOrList?
+
+  /// Custom DNS options to be passed to the container's DNS resolver.
+  dns_opt: Listing<String>(isDistinct)?
+
+  /// Custom DNS search domains to set on the service container.
+  dns_search: StringOrList?
+
+  /// Custom domain name to use for the service container.
+  domainname: String?
+
+  /// Override the default entrypoint declared by the container image, for example 'ENTRYPOINT' in
+  /// Dockerfile.
+  entrypoint: Command?
+
+  /// Add environment variables from a file or multiple files. Can be a single file path or a list of
+  /// file paths.
+  env_file: EnvFile?
+
+  /// Add metadata to containers using files containing Docker labels.
+  label_file: LabelFile?
+
+  /// Add environment variables. You can use either an array or a list of KEY=VAL pairs.
+  environment: ListOrDict?
+
+  /// Add hostname mappings to the container network interface configuration.
+  extra_hosts: ExtraHosts?
+
+  /// Define GPU devices to use. Can be set to 'all' to use all GPUs, or a list of specific GPU devices.
+  gpus: Gpus?
+
+  /// Add additional groups which user inside the container should be member of.
+  group_add: Listing<String|Number>(isDistinct)?
+
+  /// Define a custom hostname for the service container.
+  hostname: String?
+
+  /// Specify the image to start the container from. Can be a repository/tag, a digest, or a local image
+  /// ID.
+  image: String?
+
+  /// Run as an init process inside the container that forwards signals and reaps processes.
+  init: (Boolean|String)?
+
+  /// IPC sharing mode for the service container. Use 'host' to share the host's IPC namespace,
+  /// 'service:[service_name]' to share with another service, or 'shareable' to allow other services to
+  /// share this service's IPC namespace.
+  ipc: String?
+
+  /// Container isolation technology to use. Supported values are platform-specific.
+  isolation: String?
+
+  /// Add metadata to containers using Docker labels. You can use either an array or a list.
+  labels: ListOrDict?
+
+  /// Logging configuration for the service.
+  logging: Logging?
+
+  /// Container MAC address to set.
+  mac_address: String?
+
+  /// Memory limit for the container. A string value can use suffix like '2g' for 2 gigabytes.
+  mem_limit: (Int|String)?
+
+  /// Memory reservation for the container.
+  mem_reservation: (String|Int)?
+
+  /// Container memory swappiness as percentage (0 to 100).
+  mem_swappiness: (Int|String)?
+
+  /// Amount of memory the container is allowed to swap to disk. Set to -1 to enable unlimited swap.
+  memswap_limit: (Int|String)?
+
+  /// Network mode. Values can be 'bridge', 'host', 'none', 'service:[service name]', or
+  /// 'container:[container name]'.
+  network_mode: String?
+
+  /// AI Models to use, referencing entries under the top-level models key.
+  models: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), ModelsAlternate1Alternate0|Null>)?
+
+  /// Networks to join, referencing entries under the top-level networks key. Can be a list of network
+  /// names or a mapping of network name to network configuration.
+  networks: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), NetworksAlternate1Alternate0|Null>)?
+
+  /// Disable OOM Killer for the container.
+  oom_kill_disable: (Boolean|String)?
+
+  /// Tune host's OOM preferences for the container (accepts -1000 to 1000).
+  oom_score_adj: (String|Int(isBetween(-1000, 1000)))?
+
+  /// PID mode for container.
+  pid: String?
+
+  /// Tune a container's PIDs limit. Set to -1 for unlimited PIDs.
+  pids_limit: (Number|String)?
+
+  /// Target platform to run on, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
+  platform: String?
+
+  /// Give extended privileges to the service container.
+  privileged: (Boolean|String)?
+
+  /// Policy for pulling images. Options include: 'always', 'never', 'if_not_present', 'missing',
+  /// 'build', or time-based refresh policies.
+  pull_policy: String(matches(Regex("^(always|never|build|if_not_present|missing|refresh|daily|weekly|every_([0-9]+[wdhms])+)$")))?
+
+  /// Time after which to refresh the image. Used with pull_policy=refresh.
+  pull_refresh_after: String?
+
+  /// Mount the container's filesystem as read only.
+  read_only: (Boolean|String)?
+
+  /// Runtime to use for this container, e.g., 'runc'.
+  runtime: String?
+
+  /// Override the default labeling scheme for each container.
+  security_opt: Listing<String>(isDistinct)?
+
+  /// Size of /dev/shm. A string value can use suffix like '2g' for 2 gigabytes.
+  shm_size: (Int|String)?
+
+  /// Grant access to Secrets on a per-service basis.
+  secrets: ServiceConfigOrSecret?
+
+  /// Kernel parameters to set in the container. You can use either an array or a list.
+  sysctls: ListOrDict?
+
+  /// Time to wait for the container to stop gracefully before sending SIGKILL (e.g., '1s', '1m30s').
+  stop_grace_period: String?
+
+  /// Signal to stop the container (e.g., 'SIGTERM', 'SIGINT').
+  stop_signal: String?
+
+  /// Storage driver options for the container.
+  storage_opt: Mapping<String(matches(Regex("^.+$"))), (String|Number)?>?
+
+  /// Mount a temporary filesystem (tmpfs) into the container. Can be a single value or a list.
+  tmpfs: StringOrList?
+
+  /// Override the default ulimits for a container.
+  ulimits: Ulimits?
+
+  /// Set the initial umask for the container process. When omitted or null, no mask is set and the
+  /// runtime's own behavior applies; an explicit 0 masks no permission bits.
+  umask: (UInt32|String)?
+
+  /// Bind mount Docker API socket and required auth.
+  use_api_socket: Boolean?
+
+  /// Username or UID to run the container process as.
+  user: String?
+
+  /// UTS namespace to use. 'host' shares the host's UTS namespace.
+  uts: String?
+
+  /// User namespace to use. 'host' shares the host's user namespace.
+  userns_mode: String?
+
+  /// Mount host paths or named volumes accessible to the container. Short syntax
+  /// (VOLUME:CONTAINER_PATH[:MODE])
+  volumes: Listing<String|`Volume[]Alternate1`>(isDistinct)?
+
+  /// Mount volumes from another service or container. Optionally specify read-only access (ro) or
+  /// read-write (rw).
+  volumes_from: Listing<String>(isDistinct)?
+
+  /// The working directory in which the entrypoint or command will be run
+  working_dir: String?
+
+  /// When true, the hook runs once per service replica instead of once per service.
+  per_replica: (Boolean|String)?
+}
+
+/// Detailed configuration for an environment file.
+class `EnvFileAlternate1[]Alternate1` {
+  /// Path to the environment file.
+  path: String
+
+  /// Format attribute lets you to use an alternative file formats for env_file. When not set, env_file
+  /// is parsed according to Compose rules.
+  format: String?
+
+  /// Whether the file is required. If true and the file doesn't exist, an error will be raised.
+  ///
+  /// Default if undefined: `true`
+  required: (Boolean|String)?
+}
+
+/// Block IO limit for a specific device.
+class BlkioLimit {
+  /// Path to the device (e.g., '/dev/sda').
+  path: String?
+
+  /// Rate limit in bytes per second or IO operations per second.
+  rate: (Int|String)?
+}
+
+/// Block IO weight for a specific device.
+class BlkioWeight {
+  /// Path to the device (e.g., '/dev/sda').
+  path: String?
+
+  /// Relative weight for the device, between 10 and 1000.
+  weight: (Int|String)?
+}
+
+/// Detailed configuration for a config or secret.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class `ServiceConfigOrSecret[]Alternate1` {
+  /// Name of the config or secret as defined in the top-level configs or secrets section.
+  source: String?
+
+  /// Path in the container where the config or secret will be mounted. Defaults to /<source> for configs
+  /// and /run/secrets/<source> for secrets.
+  target: String?
+
+  /// UID of the file in the container. Default is 0 (root).
+  uid: String?
+
+  /// GID of the file in the container. Default is 0 (root).
+  gid: String?
+
+  /// File permission mode inside the container, in octal. Default is 0444 for configs and 0400 for
+  /// secrets.
+  mode: (Number|String)?
+}
+
+/// Separate soft and hard limits.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class UlimitsAlternate1 {
+  /// Hard limit for the ulimit type. This is the maximum allowed value.
+  hard: Int|String
+
+  /// Soft limit for the ulimit type. This is the value that's actually enforced.
+  soft: Int|String
+}
+
+/// Container attributes meaningful for orchestrated workloads (services and jobs) but not for
+/// run-to-completion init containers: build, dependency ordering, health reporting, port exposure and
+/// interactivity.
+///
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class WorkloadSpec {
+  /// Configuration options for building the service's image.
+  build: (String|BuildAlternate1)?
+
+  /// Express dependency between services. Service dependencies cause services to be started in
+  /// dependency order. The dependent service will wait for the dependency to be ready before starting.
+  depends_on: (ListOfStrings|Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), DependsOnAlternate1>)?
+
+  /// Configure a health check for the container to monitor its health status.
+  healthcheck: Healthcheck?
+
+  /// Expose container ports. Short format ([HOST:]CONTAINER[/PROTOCOL]).
+  ports: Listing<Number|String|`[]Alternate2`>(isDistinct)?
+
+  /// Expose ports without publishing them to the host machine - they'll only be accessible to linked
+  /// services.
+  expose: Listing<String|Number>(isDistinct)?
+
+  /// Keep STDIN open even if not attached.
+  stdin_open: (Boolean|String)?
+
+  /// Allocate a pseudo-TTY to service container.
+  tty: (Boolean|String)?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class BuildAlternate1 {
+  /// Path to the build context. Can be a relative path or a URL.
+  context: String?
+
+  /// Name of the Dockerfile to use for building the image.
+  dockerfile: String?
+
+  /// Inline Dockerfile content to use instead of a Dockerfile from the build context.
+  dockerfile_inline: String?
+
+  /// List of extra privileged entitlements to grant to the build process.
+  entitlements: Listing<String>?
+
+  /// Build-time variables, specified as a map or a list of KEY=VAL pairs.
+  args: ListOrDict?
+
+  /// SSH agent socket or keys to expose to the build. Format is either a string or a list of
+  /// 'default|<id>[=<socket>|<key>[,<key>]]'.
+  ssh: ListOrDict?
+
+  /// Labels to apply to the built image.
+  labels: ListOrDict?
+
+  /// List of sources the image builder should use for cache resolution
+  cache_from: Listing<String>?
+
+  /// Cache destinations for the build cache.
+  cache_to: Listing<String>?
+
+  /// Do not use cache when building the image.
+  no_cache: (Boolean|String)?
+
+  /// Do not use build cache for the specified stages.
+  no_cache_filter: StringOrList?
+
+  /// Additional build contexts to use, specified as a map of name to context path or URL.
+  additional_contexts: ListOrDict?
+
+  /// Network mode to use for the build. Options include 'default', 'none', 'host', or a network name.
+  network: String?
+
+  /// Add a provenance attestation
+  provenance: (String|Boolean)?
+
+  /// Add a SBOM attestation
+  sbom: (String|Boolean)?
+
+  /// Always attempt to pull a newer version of the image.
+  pull: (Boolean|String)?
+
+  /// Build stage to target in a multi-stage Dockerfile.
+  target: String?
+
+  /// Size of /dev/shm for the build container. A string value can use suffix like '2g' for 2 gigabytes.
+  shm_size: (Int|String)?
+
+  /// Add hostname mappings for the build container.
+  extra_hosts: ExtraHosts?
+
+  /// Container isolation technology to use for the build process.
+  isolation: String?
+
+  /// Give extended privileges to the build container.
+  privileged: (Boolean|String)?
+
+  /// Secrets to expose to the build. These are accessible at build-time.
+  secrets: ServiceConfigOrSecret?
+
+  /// Additional tags to apply to the built image.
+  tags: Listing<String>?
+
+  /// Override the default ulimits for the build container.
+  ulimits: Ulimits?
+
+  /// Platforms to build for, e.g., 'linux/amd64', 'linux/arm64', or 'windows/amd64'.
+  platforms: Listing<String>?
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class DependsOnAlternate1 {
+  /// Whether to restart dependent services when this service is restarted.
+  restart: (Boolean|String)?
+
+  /// Whether the dependency is required for the dependent service to start.
+  ///
+  /// Default if undefined: `true`
+  required: Boolean?
+
+  /// Optional dependency health condition.
+  condition: "service_started"|"service_healthy"|"service_completed_successfully"
+}
+
+/// WARN: both properties and at least one of additionalProperties and patternProperties are set. This is
+/// ambiguously defined; can either be defined as a `Mapping` or a class.
+class `[]Alternate2` {
+  /// A human-readable name for this port mapping.
+  name: String?
+
+  /// The port binding mode, either 'host' for publishing a host port or 'ingress' for load balancing.
+  mode: String?
+
+  /// Optional host interface to bind.
+  host_ip: String?
+
+  /// Port exposed by the container.
+  target: (Int|String)?
+
+  /// Port exposed on the host.
+  published: (String|Int)?
+
+  /// The port protocol (tcp or udp).
+  protocol: String?
+
+  /// Application protocol to use with the port (e.g., http, https, mysql).
+  app_protocol: String?
+}
+
+/// User-defined resources for services, allowing services to reserve specialized hardware resources.
+typealias GenericResources = Listing<GenericResource>
+
+/// Device reservations for containers, allowing services to access specific hardware devices.
+typealias Devices = Listing<Device>
+
+typealias Gpus = "all"|Listing<GpusAlternate1>
+
+/// Compose application or sub-projects to be included.
+typealias Include = String|IncludeAlternate1
+
+/// Command to run in the container, which can be specified as a string (shell form) or array (exec
+/// form).
+typealias Command = Null|String|Listing<String>
+
+typealias EnvFile = String|Listing<String|`EnvFileAlternate1[]Alternate1`>
+
+typealias LabelFile = String|Listing<String>
+
+/// Either a single string or a list of strings.
+typealias StringOrList = String|ListOfStrings
+
+/// A list of unique string values.
+typealias ListOfStrings = Listing<String>(isDistinct)
+
+/// Either a dictionary mapping keys to values, or a list of strings.
+typealias ListOrDict = Mapping<String(matches(Regex(".+"))), (String|Number|Boolean)?>|ListOfStrings
+
+/// Additional hostnames to be defined in the container's /etc/hosts file.
+typealias ExtraHosts = Mapping<String(matches(Regex(".+"))), String|Listing<String>>|Listing<String>(isDistinct)
+
+/// Configuration for service configs or secrets, defining how they are mounted in the container.
+typealias ServiceConfigOrSecret = Listing<String|`ServiceConfigOrSecret[]Alternate1`>
+
+/// Container ulimit options, controlling resource limits for processes inside the container.
+typealias Ulimits = Mapping<String(matches(Regex("^[a-z]+$"))), Int|String|UlimitsAlternate1>

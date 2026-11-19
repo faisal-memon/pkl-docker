@@ -13,6 +13,10 @@ CAPABILITIES_COMPOSE ?= $(OUT)/linux-capabilities.yaml
 validate: render-nginx render-host-network render-linux-capabilities
 	@$(PKL) eval examples/nginx.pkl >/dev/null
 	@$(PKL) eval examples/host-network.pkl >/dev/null
+	@$(PKL) eval examples/schema-coverage.pkl >/dev/null
+	@if $(PKL) eval tests/invalid-network-external.pkl >/dev/null 2>&1; then \
+		echo "invalid network external value was accepted" >&2; exit 1; \
+	fi
 	@docker compose -f "$(CAPABILITIES_COMPOSE)" config --quiet
 	@docker compose -f "$(OUT)/host-network.yaml" config --quiet
 	@echo "pkl-docker validation succeeded."
@@ -38,7 +42,7 @@ integration-up: render-nginx
 	@docker compose -p "$(NGINX_PROJECT)" -f "$(NGINX_COMPOSE)" up -d
 
 integration-down:
-	@docker compose -p "$(NGINX_PROJECT)" -f "$(NGINX_COMPOSE)" down --remove-orphans || true
+	@docker compose -p "$(NGINX_PROJECT)" down --remove-orphans || true
 
 integration-test: render-nginx
 	@set -eu; trap '$(MAKE) integration-down' EXIT; \

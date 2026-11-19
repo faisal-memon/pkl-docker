@@ -1,0 +1,5 @@
+amends "../src/Compose.pkl"
+
+networks = new Mapping {
+  ["backend"] = new Network { `external` = "true" }
+}
