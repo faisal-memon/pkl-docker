@@ -1,132 +1,56 @@
-/// A typed Docker Compose document and its YAML renderer.
+/// A typed Docker Compose document backed by the official Compose JSON Schema.
 open module pkldocker.Compose
+
+import "schema/ComposeSpec.pkl" as Schema
 
 // ── Compose file fields ──────────────────────────────────────────────────────
 
 /// Services in this Compose application, keyed by service name.
-services: Mapping<String, Service> = new {}
+services: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Service> = new {}
+
+@Deprecated
+version: String? = null
+
+/// Optional Compose project name.
+name: String? = null
+
+/// Sub-projects to include.
+include: Listing<Schema.Include>? = null
+
+/// Models used by this application.
+models: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Schema.Model>? = null
 
 /// Optional top-level network definitions.
-networks: Mapping<String, Network>? = null
+networks: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Network>? = null
 
 /// Optional top-level named volume definitions.
-volumes: Mapping<String, NamedVolume>? = null
+volumes: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), NamedVolume>? = null
+
+/// Secrets shared by services.
+secrets: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Schema.Secret>? = null
+
+/// Configurations shared by services.
+configs: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Schema.ItemConfig>? = null
+
+/// Jobs that run to completion.
+jobs: Mapping<String(matches(Regex("^[a-zA-Z0-9._-]+$"))), Schema.Job>? = null
 
 // ── Top-level Compose types ──────────────────────────────────────────────────
 
-/// A Docker Compose service definition.
-class Service {
-  /// Optional explicit container name.
-  `container_name`: String? = null
+/// A Docker Compose service definition, including all fields in the Compose schema.
+typealias Service = Schema.Service
 
-  /// Container image reference.
-  image: String(!isEmpty)
+/// A structured host-to-container port mapping.
+typealias Port = Schema.`[]Alternate2`
 
-  /// Run the container with an init process as PID 1.
-  init: Boolean = false
-
-  /// Additional host entries, in Compose's `host:ip` or `host:host-gateway` form.
-  `extra_hosts`: Listing<String> = new {}
-
-  /// DNS servers used by the container.
-  dns: Listing<String> = new {}
-
-  /// Optional command arguments.
-  command: Listing<String>? = null
-
-  /// Container restart policy.
-  restart: String? = null
-
-  /// Published host ports.
-  ports: Listing<Port> = new {}
-
-  /// Host and named volume mounts.
-  volumes: Listing<Volume> = new {}
-
-  /// Networks attached to the service.
-  networks: Listing<String> = new {}
-
-  /// Network mode, such as host or none. Mutually exclusive with networks.
-  `network_mode`: String? = null
-
-  /// Run the container with extended host privileges.
-  privileged: Boolean = false
-
-  /// Docker metadata labels.
-  labels: Mapping<String, String>? = null
-
-  /// Environment variables.
-  environment: Mapping<String, String>? = null
-
-  /// Environment files loaded by Docker Compose for this service.
-  `env_file`: Listing<String>? = null
-
-  /// Linux capabilities to add to the container.
-  `cap_add`: Listing<String> = new {}
-
-  /// Devices exposed to the service.
-  devices: Listing<String> = new {}
-
-  /// Service dependencies.
-  /// Service dependencies, rendered using Compose's `depends_on` key.
-  `depends_on`: Mapping<String, Dependency>? = null
-
-  /// Optional health check configuration.
-  healthcheck: Healthcheck? = null
-
-  /// Optional container deployment resources.
-  deploy: Deploy? = null
-}
-
-// ── Supporting types ─────────────────────────────────────────────────────────
-
-/// A host-to-container port mapping.
-class Port {
-  /// Optional host interface to bind.
-  `host_ip`: String? = null
-
-  /// Port exposed on the host.
-  published: Int(isBetween(1, 65535))?
-
-  /// Port exposed by the container.
-  target: Int(isBetween(1, 65535))
-}
-
-/// A Docker Compose volume mount.
-class Volume {
-  /// Compose volume type. Host paths use bind mounts by default.
-  type: String(matches(Regex("bind|volume|tmpfs"))) = "bind"
-
-  /// Host path or named volume.
-  source: String(!isEmpty)
-
-  /// Path inside the container.
-  target: String(!isEmpty)
-
-  /// Whether the container can write to the mount.
-  `read_only`: Boolean = false
-}
+/// A structured service volume mount.
+typealias Volume = Schema.`Volume[]Alternate1`
 
 /// Container health-check configuration.
-class Healthcheck {
-  /// Command and arguments executed by the health check.
-  test: Listing<String>
-
-  /// Time between health checks.
-  interval: String? = null
-
-  /// Maximum time allowed for one check.
-  timeout: String? = null
-
-  /// Number of consecutive failures before unhealthy.
-  retries: Int(isBetween(1, 255))? = null
-}
+typealias Healthcheck = Schema.Healthcheck
 
 /// A Compose network definition.
-class Network {
-  /// Whether the network already exists outside this Compose project.
-  `external`: Boolean = false
-}
+typealias Network = Schema.Network
 
 /// A named Docker volume, optionally referring to an externally managed volume.
 class NamedVolume {
@@ -137,43 +61,22 @@ class NamedVolume {
   `external`: Boolean = false
 }
 
-/// A dependency on another Compose service.
-class Dependency {
-  /// Optional dependency health condition.
-  condition: String? = null
-}
+/// A service dependency condition.
+typealias Dependency = Schema.DependsOnAlternate1
 
-/// Docker deployment resource settings.
-class Deploy {
-  /// Resource reservations.
-  resources: Resources? = null
-}
+/// Container deployment resource settings.
+typealias Deploy = Schema.Deployment
 
 /// Docker resource settings.
-class Resources {
-  /// Resource reservations.
-  reservations: Reservations? = null
-}
+typealias Resources = Schema.Resources
 
 /// Docker resource reservations.
-class Reservations {
-  /// Device reservations such as NVIDIA GPUs.
-  devices: Listing<Device> = new {}
-}
+typealias Reservations = Schema.Reservations
 
 /// A reserved host device.
-class Device {
-  /// Device driver, such as nvidia.
-  driver: String(!isEmpty)
+typealias Device = Schema.Device
 
-  /// Number of devices to reserve.
-  count: String(!isEmpty)
-
-  /// Device capabilities, such as gpu.
-  capabilities: Listing<String> = new {}
-}
-
-// ── YAML output ──────────────────────────────────────────────────────────────
+// ── YAML output ─────────────────────────────────────────────────────────────
 output {
   value = new Dynamic {
     services = module.services

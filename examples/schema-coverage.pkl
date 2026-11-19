@@ -1,0 +1,21 @@
+/// A Compose deployment using the schema-backed public type names.
+amends "../src/Compose.pkl"
+
+services {
+  ["db"] = new Service {
+    image = "postgres:16"
+    healthcheck = new Healthcheck { test = new Listing { "CMD-SHELL"; "pg_isready" } }
+  }
+  ["api"] = new Service {
+    image = "nginx:1.27"
+    ports = new Listing { new Port { published = 18080; target = 80 } }
+    volumes = new Listing { new Volume { type = "bind"; source = "./data"; target = "/data" } }
+    healthcheck = new Healthcheck { test = new Listing { "CMD"; "nginx"; "-t" } }
+    depends_on = new Mapping { ["db"] = new Dependency { condition = "service_healthy" } }
+  }
+}
+
+networks = new Mapping {
+  ["backend"] = new Network { `external` = true; name = "shared-backend" }
+  ["managed"] = new Network { `external` = false }
+}
